@@ -43,6 +43,30 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
         return usuario;
     }
+    
+        @Override
+    public Usuario buscarPorUsername(String username) {
+        log.info("Buscando usuario por username: " + username);
+        Usuario usuario = null;
+        String sql = "{call sp_buscarusuarioporusername(?)}";
+        try (Connection conexion = Conexion.getInstancia().conectar();
+             CallableStatement consulta = conexion.prepareCall(sql)) {
+            consulta.setString(1, username);
+            try (ResultSet tablaResultado = consulta.executeQuery()) {
+                if (tablaResultado.next()) {
+                    usuario = new Usuario();
+                    usuario.setId(tablaResultado.getInt(1));
+                    usuario.setUsername(tablaResultado.getString(2));
+                    usuario.setRol(tablaResultado.getString(3));
+                    usuario.setPasswordHash(tablaResultado.getString(4));
+                    usuario.setActivo(tablaResultado.getBoolean(5));
+                }
+            }
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "Error al buscar usuario por username: " + username, e);
+        }
+        return usuario;
+    }
 
     @Override
     public boolean insertar(Usuario objeto) {
