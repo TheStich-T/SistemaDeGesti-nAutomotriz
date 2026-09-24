@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="440.0" prefWidth="620.0" styleClass="root-pane" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sga.controller.LoginController">
+    <stylesheets>
+        <URL value="@/org/sga/view/style/loginview.css" />
+    </stylesheets>
+    <children>
+        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="360.0" spacing="14.0" styleClass="login-card">
+            <padding>
+                <Insets bottom="30.0" left="35.0" right="35.0" top="30.0" />
+            </padding>
+            <children>
+                <Label styleClass="page-title" text="Sistema de Gestión Automotriz" textAlignment="CENTER" wrapText="true" />
+                <Label styleClass="subtitle" text="Inicia sesión para continuar" />
+                <VBox spacing="4.0">
+                    <children>
+                        <Label styleClass="field-label" text="Usuario" />
+                        <TextField fx:id="txtUsuario" promptText="Ingresa tu usuario" />
+                    </children>
+                </VBox>
+                <VBox spacing="4.0">
+                    <children>
+                        <Label styleClass="field-label" text="Contraseña" />
+                        <PasswordField fx:id="txtPassword" promptText="Ingresa tu contraseña" />
+                    </children>
+                </VBox>
+                <Button fx:id="btnIniciarSesion" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoIniciarSesion" prefHeight="34.0" styleClass="primary-button" text="INICIAR SESIÓN" />
+                <Label fx:id="lblMensaje" styleClass="error-label" textAlignment="CENTER" wrapText="true" />
+            </children>
+        </VBox>
+    </children>
+</StackPane>
