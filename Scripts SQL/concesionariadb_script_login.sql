@@ -11,6 +11,18 @@ create procedure sp_iniciar_sesion(
     in _username varchar(50),
     in _password_hash varchar(255)
 )
+drop procedure if exists sp_buscarusuarioporusername;
+delimiter $$
+create procedure sp_buscarusuarioporusername(
+    in _username varchar(50)
+)
+begin
+    select id_usuario, username, rol, password_hash, activo
+    from usuarios
+    where username = _username;
+end $$
+delimiter ;
+
 begin
     select id_usuario, username, rol
     from usuarios
