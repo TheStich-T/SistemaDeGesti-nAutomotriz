@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="520.0" prefWidth="700.0" styleClass="mainFxmlClass"
+            xmlns="http://javafx.com/javafx/21.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.sga.controller.GestionUsuariosController">
+    <stylesheets>
+        <URL value="@/org/sga/view/style/gestionusuariosview.css" />
+    </stylesheets>
+    <children>
+
+        <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" onAction="#eventoVolver" prefHeight="25.0" prefWidth="89.0" text="Regresar" />
+
+        <Label layoutX="230.0" layoutY="15.0" styleClass="page-title" text="Gestión de Usuarios">
+            <font><Font size="22.0" /></font>
+        </Label>
+
+        <TableView fx:id="tblUsuarios" layoutX="30.0" layoutY="60.0" prefHeight="220.0" prefWidth="640.0" styleClass="table-view">
+            <columns>
+                <TableColumn fx:id="colUsername" prefWidth="170.0" text="Usuario" />
+                <TableColumn fx:id="colRol" prefWidth="140.0" text="Rol" />
+                <TableColumn fx:id="colActivo" prefWidth="110.0" text="Estado" />
+                <TableColumn fx:id="colFechaCreacion" prefWidth="220.0" text="Fecha de creación" />
+            </columns>
+        </TableView>
+
+        <GridPane layoutX="30.0" layoutY="295.0">
+            <columnConstraints>
+                <ColumnConstraints minWidth="10.0" prefWidth="130.0" />
+                <ColumnConstraints minWidth="10.0" prefWidth="240.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="38.0" />
+                <RowConstraints minHeight="10.0" prefHeight="38.0" />
+                <RowConstraints minHeight="10.0" prefHeight="38.0" />
+            </rowConstraints>
+            <children>
+                <Label styleClass="field-label" text="Usuario" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <Label styleClass="field-label" text="Contraseña" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <Label styleClass="field-label" text="Rol" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+
+                <TextField fx:id="txtUsername" promptText="Sin espacios" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <PasswordField fx:id="txtPassword" promptText="Mínimo 8 caracteres" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <ComboBox fx:id="cmbRol" prefWidth="240.0" promptText="Selecciona un rol" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            </children>
+        </GridPane>
+
+        <Button layoutX="30.0" layoutY="430.0" mnemonicParsing="false" onAction="#eventoAgregar" prefHeight="30.0" prefWidth="118.0" styleClass="primary-button" text="AGREGAR" />
+        <Button layoutX="160.0" layoutY="430.0" mnemonicParsing="false" onAction="#eventoActualizar" prefHeight="30.0" prefWidth="118.0" styleClass="primary-button" text="ACTUALIZAR" />
+        <Button layoutX="290.0" layoutY="430.0" mnemonicParsing="false" onAction="#eventoDesactivar" prefHeight="30.0" prefWidth="118.0" styleClass="secondary-button" text="DESACTIVAR" />
+        <Button layoutX="420.0" layoutY="430.0" mnemonicParsing="false" onAction="#eventoActivar" prefHeight="30.0" prefWidth="118.0" styleClass="secondary-button" text="ACTIVAR" />
+        <Button layoutX="550.0" layoutY="430.0" mnemonicParsing="false" onAction="#eventoLimpiar" prefHeight="30.0" prefWidth="118.0" styleClass="secondary-button" text="LIMPIAR" />
+
+        <Label fx:id="lblMensaje" layoutX="30.0" layoutY="478.0" styleClass="error-label" text="" />
+
+    </children>
+</AnchorPane>
