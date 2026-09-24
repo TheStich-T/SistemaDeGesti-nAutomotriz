@@ -17,4 +17,19 @@ public class ValidarException extends Exception {
             throw new ValidarException("El campo " + nombreCampo + " no puede estar vacío");
         }
     }
+
+    public static void validarLongitudMinima(String valor, int min, String mensaje) throws ValidarException {
+        if (valor.length() < min) {
+            log.log(Level.WARNING, "Validación fallida: longitud menor al mínimo de {0}", min);
+            throw new ValidarException(mensaje);
+        }
+    }
+
+    public static void validarNulo(Object obj, String mensaje) throws ValidarException {
+        if (obj == null) {
+            log.warning("Validación fallida: se recibió un valor nulo");
+            throw new ValidarException(mensaje);
+        }
+    }
 }
+

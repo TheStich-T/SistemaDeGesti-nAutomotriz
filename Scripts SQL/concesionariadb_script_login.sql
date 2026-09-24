@@ -17,13 +17,6 @@ create procedure sp_buscarusuarioporusername(
     in _username varchar(50)
 )
 begin
-    select id_usuario, username, rol, password_hash, activo
-    from usuarios
-    where username = _username;
-end $$
-delimiter ;
-
-begin
     select id_usuario, username, rol
     from usuarios
     where username = _username
