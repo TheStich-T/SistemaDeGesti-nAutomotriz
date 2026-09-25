@@ -1,13 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.sga.manager;
 
-/**
- *
- * @author informatica
- */
 public class RolPermisos {
-    
+
+    private RolPermisos() {
+    }
+
+    public static String getDashboardPorRol(String rol) {
+        if (rol == null) {
+            return null;
+        }
+        return switch (rol.toLowerCase()) {
+            case "admin" ->
+                "/org/sga/view/AdminDashboardView.fxml";
+            case "provisionador" ->
+                "/org/sga/view/ProvisionadorDashboardView.fxml";
+            case "mecanico" ->
+                "/org/sga/view/MecanicoDashboardView.fxml";
+            case "asesor" ->
+                "/org/sga/view/AsesorDashboardView.fxml";
+            default ->
+                null;
+        };
+    }
 }
