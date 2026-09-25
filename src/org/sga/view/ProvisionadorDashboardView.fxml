@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
  
-<BorderPane prefHeight="620.0" prefWidth="940.0" styleClass="dashboard-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sga.controller.MecanicoDashboardController">
+<BorderPane prefHeight="620.0" prefWidth="940.0" styleClass="dashboard-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sga.controller.ProvisionadorDashboardController">
     <stylesheets>
-        <URL value="@/org/sga/view/style/mecanicodashboardview.css" />
+        <URL value="@/org/sga/view/style/provisionadordashboardview.css" />
     </stylesheets>
  
     <left>
@@ -42,8 +42,8 @@
                     </VBox.margin>
                     <children>
                         <Label styleClass="sidebar-link-active" text="Menú principal" />
-                        <Label styleClass="sidebar-link" text="Taller" />
-                        <Label styleClass="sidebar-link" text="Cola de trabajo" />
+                        <Label styleClass="sidebar-link" text="Provisión" />
+                        <Label styleClass="sidebar-link" text="Inventario" />
                     </children>
                 </VBox>
  
@@ -54,7 +54,7 @@
                         <Insets bottom="14.0" />
                     </VBox.margin>
                 </Region>
-                <Label fx:id="lblUsuarioSidebar" prefHeight="17.0" prefWidth="57.0" styleClass="sidebar-user" text="Mecánico">
+                <Label fx:id="lblUsuarioSidebar" styleClass="sidebar-user" text="Provisionador">
                     <VBox.margin>
                         <Insets bottom="6.0" />
                     </VBox.margin>
@@ -84,7 +84,7 @@
                         <Insets top="14.0" />
                     </VBox.margin>
                 </Label>
-                <Label styleClass="welcome-subtitle" text="Resumen de la cola de trabajo">
+                <Label styleClass="welcome-subtitle" text="Resumen de vehículos en provisión">
                     <VBox.margin>
                         <Insets bottom="22.0" />
                     </VBox.margin>
@@ -100,9 +100,8 @@
                         <RowConstraints minHeight="70.0" prefHeight="80.0" />
                     </rowConstraints>
                     <children>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Cola de vehículos" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Cambiar estado de trabajo" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Liberar a Disponible" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Registrar vehículo" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Definir tipo de operación" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                     </children>
                 </GridPane>
             </children>

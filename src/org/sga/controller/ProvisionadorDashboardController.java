@@ -13,7 +13,7 @@ import org.sga.manager.SessionContext;
 import org.sga.model.Usuario;
 import org.sga.system.Main;
 
-public class MecanicoDashboardController implements Initializable {
+public class ProvisionadorDashboardController implements Initializable {
 
     @FXML
     private Label lblBienvenida;
@@ -21,7 +21,7 @@ public class MecanicoDashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Usuario actual = SessionContext.getInstancia().getUsuarioActual();
-        lblBienvenida.setText("Bienvenido, " + (actual != null ? actual.getUsername() : "mecánico"));
+        lblBienvenida.setText("Bienvenido, " + (actual != null ? actual.getUsername() : "provisionador"));
     }
 
     @FXML
