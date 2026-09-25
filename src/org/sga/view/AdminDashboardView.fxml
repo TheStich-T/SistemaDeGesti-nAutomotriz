@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+ 
+<BorderPane prefHeight="660.0" prefWidth="960.0" styleClass="dashboard-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sga.controller.AdminDashboardController">
+    <stylesheets>
+        <URL value="@/org/sga/view/style/admindashboardview.css" />
+    </stylesheets>
+ 
+    <left>
+        <VBox prefWidth="190.0" spacing="6.0" styleClass="sidebar" BorderPane.alignment="TOP_LEFT">
+            <padding>
+                <Insets bottom="20.0" left="22.0" right="16.0" top="28.0" />
+            </padding>
+            <children>
+                <Label styleClass="sidebar-brand" text="SGA">
+                    <font>
+                        <Font size="19.0" />
+                    </font>
+                </Label>
+                <Region prefHeight="3.0" prefWidth="36.0" styleClass="sidebar-brand-line">
+                    <VBox.margin>
+                        <Insets bottom="20.0" top="8.0" />
+                    </VBox.margin>
+                </Region>
+ 
+                <Label styleClass="sidebar-section" text="NAVEGACIÓN" />
+                <VBox spacing="10.0">
+                    <VBox.margin>
+                        <Insets bottom="16.0" top="8.0" />
+                    </VBox.margin>
+                    <children>
+                        <Label styleClass="sidebar-link-active" text="Menú principal" />
+                        <Label styleClass="sidebar-link" text="Ventas" />
+                        <Label styleClass="sidebar-link" text="Vehículos" />
+                        <Label styleClass="sidebar-link" text="Reportes" />
+                    </children>
+                </VBox>
+ 
+                <Label styleClass="sidebar-section" text="USUARIOS" />
+                <Button mnemonicParsing="false" onAction="#eventoGestionUsuarios" prefHeight="28.0" styleClass="sidebar-logout" text="Gestionar usuarios">
+                    <VBox.margin>
+                        <Insets bottom="6.0" top="6.0" />
+                    </VBox.margin>
+                </Button>
+ 
+                <Region VBox.vgrow="ALWAYS" />
+ 
+                <Region maxWidth="Infinity" prefHeight="1.0" styleClass="sidebar-divider">
+                    <VBox.margin>
+                        <Insets bottom="14.0" />
+                    </VBox.margin>
+                </Region>
+                <Label fx:id="lblUsuarioSidebar" styleClass="sidebar-user" text="Administrador">
+                    <VBox.margin>
+                        <Insets bottom="6.0" />
+                    </VBox.margin>
+                </Label>
+                <Button mnemonicParsing="false" onAction="#eventoCerrarSesion" styleClass="sidebar-logout" text="Cerrar sesión" />
+            </children>
+        </VBox>
+    </left>
+ 
+    <center>
+        <VBox BorderPane.alignment="TOP_LEFT">
+            <padding>
+                <Insets bottom="30.0" left="34.0" right="34.0" top="26.0" />
+            </padding>
+            <children>
+                <HBox alignment="CENTER_RIGHT">
+                    <children>
+                        <Label styleClass="app-title" text="SISTEMA DE GESTIÓN AUTOMOTRIZ" />
+                    </children>
+                </HBox>
+ 
+                <Label fx:id="lblBienvenida" styleClass="welcome-title" text="Bienvenido!">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets top="14.0" />
+                    </VBox.margin>
+                </Label>
+                <Label styleClass="welcome-subtitle" text="Resumen general del sistema">
+                    <VBox.margin>
+                        <Insets bottom="18.0" />
+                    </VBox.margin>
+                </Label>
+ 
+                <HBox spacing="50.0">
+                    <VBox.margin>
+                        <Insets bottom="24.0" />
+                    </VBox.margin>
+                    <children>
+                        <VBox spacing="2.0" />
+                        <VBox spacing="2.0">
+                            <children>
+                                <Label fx:id="lblVentasHoy" styleClass="indicator-value" />
+                            </children>
+                        </VBox>
+                        <VBox spacing="2.0" />
+                    </children>
+                </HBox>
+ 
+                <GridPane hgap="16.0" vgap="16.0">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="180.0" prefWidth="220.0" />
+                        <ColumnConstraints minWidth="180.0" prefWidth="220.0" />
+                        <ColumnConstraints minWidth="180.0" prefWidth="220.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="70.0" prefHeight="80.0" />
+                        <RowConstraints minHeight="70.0" prefHeight="80.0" />
+                    </rowConstraints>
+                    <children>
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoGestionUsuarios" styleClass="dashboard-card" text="Gestión de usuarios" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Reportes por período" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Indicadores generales" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Inventario de vehículos" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Historial de ventas" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Historial de alquileres" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                    </children>
+                </GridPane>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

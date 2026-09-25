@@ -1,0 +1,110 @@
+.dashboard-root {
+    -fx-background-color: #eef1f5;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+    -fx-background-color: #33506f;
+}
+
+.sidebar-brand {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.sidebar-brand-line {
+    -fx-background-color: rgba(255, 255, 255, 0.35);
+}
+
+.sidebar-section {
+    -fx-text-fill: #9fb4c9;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-link {
+    -fx-text-fill: #d3dfea;
+    -fx-font-size: 13px;
+}
+
+.sidebar-link-active {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.sidebar-divider {
+    -fx-background-color: rgba(255, 255, 255, 0.18);
+}
+
+.sidebar-user {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.sidebar-logout {
+    -fx-text-fill: #a9bdd1;
+    -fx-font-size: 12px;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.sidebar-logout:hover {
+    -fx-text-fill: #ffffff;
+}
+
+/* ---- Encabezado y bienvenida ---- */
+.app-title {
+    -fx-text-fill: #6b7280;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.welcome-title {
+    -fx-text-fill: #33506f;
+    -fx-font-weight: bold;
+}
+
+.welcome-subtitle {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 12px;
+}
+
+.indicator-label {
+    -fx-text-fill: #33506f;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.indicator-value {
+    -fx-text-fill: #202632;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+/* ---- Tarjetas ---- */
+.dashboard-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6px;
+    -fx-border-width: 3 0 0 0;
+    -fx-border-color: #33506f;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 10, 0.15, 0, 3);
+    -fx-text-fill: #202632;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 0 0 16;
+    -fx-cursor: hand;
+}
+
+.dashboard-card:hover {
+    -fx-background-color: #f5f8fb;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 12, 0.15, 0, 4);
+}
+
+.dashboard-card-alt {
+    -fx-border-color: #5b8bb0;
+}
