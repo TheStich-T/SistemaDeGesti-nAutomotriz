@@ -24,9 +24,13 @@ public class ProvisionadorDashboardController implements Initializable {
         lblBienvenida.setText("Bienvenido, " + (actual != null ? actual.getUsername() : "provisionador"));
     }
 
-    @FXML
-    public void eventoProximamente(ActionEvent evento) {
-        new Alert(Alert.AlertType.INFORMATION, "Esta función se implementa en un próximo sprint.", ButtonType.OK).show();
+        @FXML
+    public void eventoRegistrarVehiculo(ActionEvent evento) {
+        try {
+            Main.cambiarEscena("/org/sga/view/VehiculoAltaView.fxml");
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
+        }
     }
 
     @FXML
