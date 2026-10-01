@@ -24,6 +24,11 @@ public class ProvisionadorDashboardController implements Initializable {
         lblBienvenida.setText("Bienvenido, " + (actual != null ? actual.getUsername() : "provisionador"));
     }
 
+    @FXML
+    public void eventoProximamente(ActionEvent evento) {
+        new Alert(Alert.AlertType.INFORMATION, "Esta función se implementa en un próximo sprint.", ButtonType.OK).show();
+    }
+
         @FXML
     public void eventoRegistrarVehiculo(ActionEvent evento) {
         try {
@@ -32,7 +37,7 @@ public class ProvisionadorDashboardController implements Initializable {
             new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
         }
     }
-
+    
     @FXML
     public void eventoCerrarSesion(ActionEvent evento) {
         try {
