@@ -100,7 +100,7 @@
                         <RowConstraints minHeight="70.0" prefHeight="80.0" />
                     </rowConstraints>
                     <children>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Registrar vehículo" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoRegistrarVehiculo" styleClass="dashboard-card" text="Registrar vehículo" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Definir tipo de operación" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                     </children>
                 </GridPane>
