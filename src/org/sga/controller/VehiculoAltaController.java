@@ -30,6 +30,9 @@ public class VehiculoAltaController implements Initializable {
 
     private static final String DESTINO_DISPONIBLE = "Disponible";
     private static final String DESTINO_TALLER = "Cola de mecánico";
+    private static final String OPERACION_VENTA = "Venta";
+    private static final String OPERACION_ALQUILER = "Alquiler";
+    private static final String OPERACION_AMBAS = "Ambas";
     private static final BigDecimal COSTO_MAXIMO = new BigDecimal("99999999.99");
     private static final int ANIO_MINIMO = 1950;
 
@@ -41,6 +44,7 @@ public class VehiculoAltaController implements Initializable {
     @FXML private TableColumn<Vehiculo, String> colCondicion;
     @FXML private TableColumn<Vehiculo, String> colCosto;
     @FXML private TableColumn<Vehiculo, String> colEstado;
+    @FXML private TableColumn<Vehiculo, String> colOperacion;
 
     @FXML private TextField txtPlaca;
     @FXML private TextField txtMarca;
@@ -51,6 +55,7 @@ public class VehiculoAltaController implements Initializable {
     @FXML private TextField txtProveedor;
     @FXML private TextField txtCosto;
     @FXML private ComboBox<String> cmbDestino;
+    @FXML private ComboBox<String> cmbOperacion;
     @FXML private TextField txtObservaciones;
     @FXML private Label lblMensaje;
 
@@ -61,6 +66,7 @@ public class VehiculoAltaController implements Initializable {
         vehiculoDAO = new VehiculoDAOImpl();
         cmbCondicion.setItems(FXCollections.observableArrayList("nuevo", "usado"));
         cmbDestino.setItems(FXCollections.observableArrayList(DESTINO_DISPONIBLE, DESTINO_TALLER));
+        cmbOperacion.setItems(FXCollections.observableArrayList(OPERACION_VENTA, OPERACION_ALQUILER, OPERACION_AMBAS));
         lblMensaje.setText("");
 
         colPlaca.setCellValueFactory(dato -> new SimpleStringProperty(dato.getValue().getPlaca()));
@@ -72,6 +78,8 @@ public class VehiculoAltaController implements Initializable {
                 -> new SimpleStringProperty(String.format("Q %,.2f", dato.getValue().getCosto())));
         colEstado.setCellValueFactory(dato
                 -> new SimpleStringProperty(textoEstado(dato.getValue().getEstado())));
+        colOperacion.setCellValueFactory(dato
+                -> new SimpleStringProperty(textoOperacion(dato.getValue().getOperacionPermitida())));
 
         cargarVehiculos();
     }
@@ -91,6 +99,7 @@ public class VehiculoAltaController implements Initializable {
             ValidarException.validarNoVacio(txtCosto.getText(), "precio / costo");
             ValidarException.validarNulo(cmbCondicion.getValue(), "Debe seleccionar la condición del vehículo.");
             ValidarException.validarNulo(cmbDestino.getValue(), "Debe seleccionar el destino inicial del vehículo.");
+            ValidarException.validarNulo(cmbOperacion.getValue(), "Debe seleccionar la operación permitida del vehículo (venta, alquiler o ambas).");
 
             String placa = txtPlaca.getText().trim().toUpperCase();
             String marca = txtMarca.getText().trim();
@@ -139,6 +148,7 @@ public class VehiculoAltaController implements Initializable {
             nuevoVehiculo.setCosto(costo);
             nuevoVehiculo.setObservaciones(observaciones.isEmpty() ? null : observaciones);
             nuevoVehiculo.setEstado(DESTINO_DISPONIBLE.equals(cmbDestino.getValue()) ? "disponible" : "en_taller");
+            nuevoVehiculo.setOperacionPermitida(valorOperacion(cmbOperacion.getValue()));
             nuevoVehiculo.setIdUsuarioProvisionador(actual.getId());
 
             if (vehiculoDAO.insertar(nuevoVehiculo)) {
@@ -220,6 +230,26 @@ public class VehiculoAltaController implements Initializable {
         };
     }
 
+    private String textoOperacion(String operacion) {
+        if (operacion == null) {
+            return "";
+        }
+        return switch (operacion) {
+            case "venta" -> OPERACION_VENTA;
+            case "alquiler" -> OPERACION_ALQUILER;
+            case "ambas" -> OPERACION_AMBAS;
+            default -> operacion;
+        };
+    }
+
+    private String valorOperacion(String textoSeleccionado) {
+        return switch (textoSeleccionado) {
+            case OPERACION_VENTA -> "venta";
+            case OPERACION_ALQUILER -> "alquiler";
+            default -> "ambas";
+        };
+    }
+
     private void limpiarCampos() {
         txtPlaca.clear();
         txtMarca.clear();
@@ -230,6 +260,7 @@ public class VehiculoAltaController implements Initializable {
         txtProveedor.clear();
         txtCosto.clear();
         cmbDestino.setValue(null);
+        cmbOperacion.setValue(null); 
         txtObservaciones.clear();
         lblMensaje.setText("");
         tblVehiculos.getSelectionModel().clearSelection();

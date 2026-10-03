@@ -16,6 +16,7 @@ public class Vehiculo {
     private BigDecimal costo;
     private String observaciones;
     private String estado;
+    private String operacionPermitida;
     private String progresoTaller;
     private int idUsuarioProvisionador;
     private LocalDateTime fechaIngreso;
@@ -25,8 +26,8 @@ public class Vehiculo {
 
     public Vehiculo(int id, String placa, String marca, String modelo, int anio, String color,
             String condicion, String proveedor, BigDecimal costo, String observaciones,
-            String estado, String progresoTaller, int idUsuarioProvisionador,
-            LocalDateTime fechaIngreso) {
+            String estado, String operacionPermitida, String progresoTaller,
+            int idUsuarioProvisionador, LocalDateTime fechaIngreso) {
         this.id = id;
         this.placa = placa;
         this.marca = marca;
@@ -38,6 +39,7 @@ public class Vehiculo {
         this.costo = costo;
         this.observaciones = observaciones;
         this.estado = estado;
+        this.operacionPermitida = operacionPermitida;
         this.progresoTaller = progresoTaller;
         this.idUsuarioProvisionador = idUsuarioProvisionador;
         this.fechaIngreso = fechaIngreso;
@@ -129,6 +131,15 @@ public class Vehiculo {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    // US-2.2 (T2.8): getter y setter del campo operacionPermitida
+    public String getOperacionPermitida() {
+        return operacionPermitida;
+    }
+
+    public void setOperacionPermitida(String operacionPermitida) {
+        this.operacionPermitida = operacionPermitida;
     }
 
     public String getProgresoTaller() {

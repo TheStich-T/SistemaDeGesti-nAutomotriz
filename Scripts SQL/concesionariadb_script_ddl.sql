@@ -35,6 +35,7 @@ create table vehiculos (
     proveedor varchar(100),
     costo decimal(10,2) not null,
     observaciones text,
+    operacion_permitida enum('venta', 'alquiler', 'ambas') not null default 'ambas',
     estado enum('en_taller', 'disponible', 'en_alquiler', 'vendido') not null default 'en_taller',
     progreso_taller enum('pendiente', 'en_progreso', 'terminado') default 'pendiente',
     id_usuario_provisionador int,
@@ -223,16 +224,17 @@ create procedure sp_insertarvehiculo(
     in _costo decimal(10,2),
     in _observaciones text,
     in _estado varchar(20),
-    in _id_usuario_provisionador int
+    in _id_usuario_provisionador int,
+    in _operacion_permitida varchar(10)
 )
 begin
-    insert into vehiculos(placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, id_usuario_provisionador)
-    values (_placa, _marca, _modelo, _anio, _color, _condicion, _proveedor, _costo, _observaciones, _estado, _id_usuario_provisionador);
+    insert into vehiculos(placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, id_usuario_provisionador, operacion_permitida)
+    values (_placa, _marca, _modelo, _anio, _color, _condicion, _proveedor, _costo, _observaciones, _estado, _id_usuario_provisionador, _operacion_permitida);
 end $$
 
 create procedure sp_listarvehiculos()
 begin
-    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso
+    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso, operacion_permitida
     from vehiculos;
 end $$
 
@@ -240,9 +242,19 @@ create procedure sp_buscarvehiculo(
     in _id_vehiculo int
 )
 begin
-    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso
+    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso, operacion_permitida
     from vehiculos
     where id_vehiculo = _id_vehiculo;
+end $$
+
+-- Lo usa VehiculoAltaController para validar que la placa no esté repetida.
+create procedure sp_buscarvehiculoporplaca(
+    in _placa varchar(15)
+)
+begin
+    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso, operacion_permitida
+    from vehiculos
+    where placa = _placa;
 end $$
 
 create procedure sp_actualizarvehiculo(
@@ -451,6 +463,7 @@ delimiter ;
 delimiter $$
 
 -- asesor: vender un vehículo disponible
+-- cambio opcional: solo se vende si operacion_permitida es 'venta' o 'ambas'
 create procedure sp_vendervehiculo(
     in _id_vehiculo int,
     in _cui_cliente bigint,
@@ -461,12 +474,13 @@ begin
     insert into ventas(id_vehiculo, cui_cliente, id_asesor, precio)
     select id_vehiculo, _cui_cliente, _id_asesor, _precio
     from vehiculos
-    where id_vehiculo = _id_vehiculo and estado = 'disponible';
+    where id_vehiculo = _id_vehiculo and estado = 'disponible' and operacion_permitida in ('venta', 'ambas');
 
-    update vehiculos set estado = 'vendido' where id_vehiculo = _id_vehiculo and estado = 'disponible';
+    update vehiculos set estado = 'vendido' where id_vehiculo = _id_vehiculo and estado = 'disponible' and operacion_permitida in ('venta', 'ambas');
 end $$
 
 -- asesor: alquilar un vehículo disponible
+-- cambio opcional : solo se alquila si operacion_permitida es 'alquiler' o 'ambas'
 create procedure sp_alquilarvehiculo(
     in _id_vehiculo int,
     in _cui_cliente bigint,
@@ -479,9 +493,9 @@ begin
     insert into alquileres(id_vehiculo, cui_cliente, id_asesor, fecha_salida, fecha_regreso, lleva_seguro)
     select id_vehiculo, _cui_cliente, _id_asesor, _fecha_salida, _fecha_regreso, _lleva_seguro
     from vehiculos
-    where id_vehiculo = _id_vehiculo and estado = 'disponible';
+    where id_vehiculo = _id_vehiculo and estado = 'disponible' and operacion_permitida in ('alquiler', 'ambas');
 
-    update vehiculos set estado = 'en_alquiler' where id_vehiculo = _id_vehiculo and estado = 'disponible';
+    update vehiculos set estado = 'en_alquiler' where id_vehiculo = _id_vehiculo and estado = 'disponible' and operacion_permitida in ('alquiler', 'ambas');
 end $$
 
 -- asesor: registrar el regreso de un vehículo alquilado (devuelto o enviado a revisión)
@@ -519,7 +533,8 @@ begin
         estado,
         progreso_taller,
         id_usuario_provisionador,
-        fecha_ingreso
+        fecha_ingreso,
+        operacion_permitida
     from vehiculos
     where estado = 'en_taller'
     order by fecha_ingreso asc;
@@ -586,6 +601,7 @@ select
     v.anio as 'año',
     v.color as 'color',
     v.condicion as 'condición',
+    v.operacion_permitida as 'operación permitida',
     v.estado as 'estado',
     v.progreso_taller as 'progreso taller',
     u.username as 'provisionador',
