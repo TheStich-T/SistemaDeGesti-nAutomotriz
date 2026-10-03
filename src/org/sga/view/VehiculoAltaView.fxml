@@ -25,18 +25,21 @@
         <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" onAction="#eventoVolver" prefHeight="25.0" prefWidth="89.0" text="Regresar" />
 
         <Label layoutX="250.0" layoutY="15.0" styleClass="page-title" text="Registrar Vehículo">
-            <font><Font size="22.0" /></font>
+            <font>
+                <Font size="22.0" />
+            </font>
         </Label>
 
         <TableView fx:id="tblVehiculos" layoutX="30.0" layoutY="60.0" prefHeight="190.0" prefWidth="700.0" styleClass="table-view">
             <columns>
-                <TableColumn fx:id="colPlaca" prefWidth="100.0" text="Placa" />
-                <TableColumn fx:id="colMarca" prefWidth="110.0" text="Marca" />
-                <TableColumn fx:id="colModelo" prefWidth="110.0" text="Modelo" />
-                <TableColumn fx:id="colAnio" prefWidth="60.0" text="Año" />
-                <TableColumn fx:id="colCondicion" prefWidth="80.0" text="Condición" />
-                <TableColumn fx:id="colCosto" prefWidth="120.0" text="Costo" />
-                <TableColumn fx:id="colEstado" prefWidth="120.0" text="Estado" />
+                <TableColumn fx:id="colPlaca" prefWidth="90.0" text="Placa" />
+                <TableColumn fx:id="colMarca" prefWidth="100.0" text="Marca" />
+                <TableColumn fx:id="colModelo" prefWidth="100.0" text="Modelo" />
+                <TableColumn fx:id="colAnio" prefWidth="55.0" text="Año" />
+                <TableColumn fx:id="colCondicion" prefWidth="75.0" text="Condición" />
+                <TableColumn fx:id="colCosto" prefWidth="100.0" text="Costo" />
+                <TableColumn fx:id="colEstado" prefWidth="90.0" text="Estado" />
+                <TableColumn fx:id="colOperacion" prefWidth="90.0" text="Operación" />
             </columns>
         </TableView>
 
@@ -78,7 +81,8 @@
 
                 <Label styleClass="field-label" text="Destino inicial" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                 <ComboBox fx:id="cmbDestino" prefWidth="230.0" promptText="Selecciona el destino" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                <!-- US-2.2 (Javier): aquí va el selector de operación permitida (venta / alquiler / ambas) -->
+                <Label styleClass="field-label" text="Operación permitida" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                <ComboBox fx:id="cmbOperacion" prefWidth="230.0" promptText="Venta, alquiler o ambas" styleClass="text-input" GridPane.columnIndex="3" GridPane.rowIndex="4" />
 
                 <Label styleClass="field-label" text="Observaciones" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                 <TextField fx:id="txtObservaciones" promptText="Opcional" styleClass="text-input" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5" />
