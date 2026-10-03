@@ -502,6 +502,30 @@ begin
     end if;
 end $$
 
+-- mecánico: consultar vehículos que están actualmente en la cola del taller
+create procedure sp_listarvehiculosencola()
+begin
+    select
+        id_vehiculo,
+        placa,
+        marca,
+        modelo,
+        anio,
+        color,
+        condicion,
+        proveedor,
+        costo,
+        observaciones,
+        estado,
+        progreso_taller,
+        id_usuario_provisionador,
+        fecha_ingreso
+    from vehiculos
+    where estado = 'en_taller'
+    order by fecha_ingreso asc;
+end $$
+
+
 -- mecánico: actualizar avance en la pantalla "Cola"
 create procedure sp_actualizarprogresotaller(
     in _id_vehiculo int,
