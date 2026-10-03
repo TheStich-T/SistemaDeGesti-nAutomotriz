@@ -16,8 +16,8 @@ import org.sga.util.Conexion;
 
 public class VehiculoDAOImpl implements VehiculoDAO {
 
-    private static final Logger log =
-            Logger.getLogger(VehiculoDAOImpl.class.getName());
+    private static final Logger log
+            = Logger.getLogger(VehiculoDAOImpl.class.getName());
 
     @Override
     public boolean insertar(Vehiculo objeto) {
@@ -27,13 +27,12 @@ public class VehiculoDAOImpl implements VehiculoDAO {
                 + ", estado inicial: "
                 + objeto.getEstado());
 
-        String sql =
-                "{call sp_insertarvehiculo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+        String sql
+                = "{call sp_insertarvehiculo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
-        try (Connection conexion =
-                    Conexion.getInstancia().conectar();
-             CallableStatement consulta =
-                    conexion.prepareCall(sql)) {
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql)) {
 
             consulta.setString(1, objeto.getPlaca());
             consulta.setString(2, objeto.getMarca());
@@ -52,12 +51,13 @@ public class VehiculoDAOImpl implements VehiculoDAO {
 
             consulta.setString(10, objeto.getEstado());
             consulta.setInt(11, objeto.getIdUsuarioProvisionador());
+            consulta.setString(12, objeto.getOperacionPermitida());
 
-            int filasAfectadas =
-                    consulta.executeUpdate();
+            int filasAfectadas
+                    = consulta.executeUpdate();
 
-            boolean registrado =
-                    filasAfectadas > 0;
+            boolean registrado
+                    = filasAfectadas > 0;
 
             if (registrado) {
                 log.info(
@@ -86,18 +86,16 @@ public class VehiculoDAOImpl implements VehiculoDAO {
 
         log.info("Listando vehículos");
 
-        List<Vehiculo> vehiculos =
-                new ArrayList<>();
+        List<Vehiculo> vehiculos
+                = new ArrayList<>();
 
-        String sql =
-                "{call sp_listarvehiculos()}";
+        String sql
+                = "{call sp_listarvehiculos()}";
 
-        try (Connection conexion =
-                    Conexion.getInstancia().conectar();
-             CallableStatement consulta =
-                    conexion.prepareCall(sql);
-             ResultSet tablaResultado =
-                    consulta.executeQuery()) {
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql); ResultSet tablaResultado
+                = consulta.executeQuery()) {
 
             while (tablaResultado.next()) {
 
@@ -133,23 +131,22 @@ public class VehiculoDAOImpl implements VehiculoDAO {
 
         Vehiculo vehiculo = null;
 
-        String sql =
-                "{call sp_buscarvehiculo(?)}";
+        String sql
+                = "{call sp_buscarvehiculo(?)}";
 
-        try (Connection conexion =
-                    Conexion.getInstancia().conectar();
-             CallableStatement consulta =
-                    conexion.prepareCall(sql)) {
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql)) {
 
             consulta.setInt(1, id);
 
-            try (ResultSet tablaResultado =
-                    consulta.executeQuery()) {
+            try (ResultSet tablaResultado
+                    = consulta.executeQuery()) {
 
                 if (tablaResultado.next()) {
 
-                    vehiculo =
-                            mapearVehiculo(tablaResultado);
+                    vehiculo
+                            = mapearVehiculo(tablaResultado);
                 }
             }
 
@@ -176,23 +173,22 @@ public class VehiculoDAOImpl implements VehiculoDAO {
 
         Vehiculo vehiculo = null;
 
-        String sql =
-                "{call sp_buscarvehiculoporplaca(?)}";
+        String sql
+                = "{call sp_buscarvehiculoporplaca(?)}";
 
-        try (Connection conexion =
-                    Conexion.getInstancia().conectar();
-             CallableStatement consulta =
-                    conexion.prepareCall(sql)) {
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql)) {
 
             consulta.setString(1, placa);
 
-            try (ResultSet tablaResultado =
-                    consulta.executeQuery()) {
+            try (ResultSet tablaResultado
+                    = consulta.executeQuery()) {
 
                 if (tablaResultado.next()) {
 
-                    vehiculo =
-                            mapearVehiculo(tablaResultado);
+                    vehiculo
+                            = mapearVehiculo(tablaResultado);
                 }
             }
 
@@ -217,13 +213,12 @@ public class VehiculoDAOImpl implements VehiculoDAO {
                 + objeto.getPlaca()
         );
 
-        String sql =
-                "{call sp_actualizarvehiculo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+        String sql
+                = "{call sp_actualizarvehiculo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
-        try (Connection conexion =
-                    Conexion.getInstancia().conectar();
-             CallableStatement consulta =
-                    conexion.prepareCall(sql)) {
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql)) {
 
             consulta.setInt(1, objeto.getId());
             consulta.setString(2, objeto.getPlaca());
@@ -250,11 +245,11 @@ public class VehiculoDAOImpl implements VehiculoDAO {
                 );
             }
 
-            int filasAfectadas =
-                    consulta.executeUpdate();
+            int filasAfectadas
+                    = consulta.executeUpdate();
 
-            boolean actualizado =
-                    filasAfectadas > 0;
+            boolean actualizado
+                    = filasAfectadas > 0;
 
             if (actualizado) {
 
@@ -287,21 +282,20 @@ public class VehiculoDAOImpl implements VehiculoDAO {
                 + id
         );
 
-        String sql =
-                "{call sp_eliminarvehiculo(?)}";
+        String sql
+                = "{call sp_eliminarvehiculo(?)}";
 
-        try (Connection conexion =
-                    Conexion.getInstancia().conectar();
-             CallableStatement consulta =
-                    conexion.prepareCall(sql)) {
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql)) {
 
             consulta.setInt(1, id);
 
-            int filasAfectadas =
-                    consulta.executeUpdate();
+            int filasAfectadas
+                    = consulta.executeUpdate();
 
-            boolean eliminado =
-                    filasAfectadas > 0;
+            boolean eliminado
+                    = filasAfectadas > 0;
 
             if (eliminado) {
 
@@ -325,8 +319,7 @@ public class VehiculoDAOImpl implements VehiculoDAO {
             return false;
         }
     }
-    
-    
+
     @Override
     public List<Vehiculo> listarColaTaller() {
 
@@ -334,18 +327,16 @@ public class VehiculoDAOImpl implements VehiculoDAO {
                 "Consultando vehículos en cola de taller"
         );
 
-        List<Vehiculo> vehiculos =
-                new ArrayList<>();
+        List<Vehiculo> vehiculos
+                = new ArrayList<>();
 
-        String sql =
-                "{call sp_listarvehiculosencola()}";
+        String sql
+                = "{call sp_listarvehiculosencola()}";
 
-        try (Connection conexion =
-                    Conexion.getInstancia().conectar();
-             CallableStatement consulta =
-                    conexion.prepareCall(sql);
-             ResultSet tablaResultado =
-                    consulta.executeQuery()) {
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql); ResultSet tablaResultado
+                = consulta.executeQuery()) {
 
             while (tablaResultado.next()) {
 
@@ -383,13 +374,12 @@ public class VehiculoDAOImpl implements VehiculoDAO {
                 + progresoTaller
         );
 
-        String sql =
-                "{call sp_actualizarprogresotaller(?, ?)}";
+        String sql
+                = "{call sp_actualizarprogresotaller(?, ?)}";
 
-        try (Connection conexion =
-                    Conexion.getInstancia().conectar();
-             CallableStatement consulta =
-                    conexion.prepareCall(sql)) {
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql)) {
 
             consulta.setInt(
                     1,
@@ -401,11 +391,11 @@ public class VehiculoDAOImpl implements VehiculoDAO {
                     progresoTaller
             );
 
-            int filasAfectadas =
-                    consulta.executeUpdate();
+            int filasAfectadas
+                    = consulta.executeUpdate();
 
-            boolean actualizado =
-                    filasAfectadas > 0;
+            boolean actualizado
+                    = filasAfectadas > 0;
 
             if (actualizado) {
 
@@ -432,8 +422,8 @@ public class VehiculoDAOImpl implements VehiculoDAO {
             ResultSet tablaResultado)
             throws SQLException {
 
-        Vehiculo vehiculo =
-                new Vehiculo();
+        Vehiculo vehiculo
+                = new Vehiculo();
 
         vehiculo.setId(
                 tablaResultado.getInt(1)
@@ -480,16 +470,17 @@ public class VehiculoDAOImpl implements VehiculoDAO {
         vehiculo.setIdUsuarioProvisionador(
                 tablaResultado.getInt(13)
         );
-        Timestamp fecha =
-                tablaResultado.getTimestamp(14);
+        Timestamp fecha
+                = tablaResultado.getTimestamp(14);
         if (fecha != null) {
 
             vehiculo.setFechaIngreso(
                     fecha.toLocalDateTime()
             );
         }
+        vehiculo.setOperacionPermitida(
+                tablaResultado.getString(15)
+        );
         return vehiculo;
     }
 }
-
-
