@@ -547,4 +547,29 @@ public class VehiculoDAOImpl implements VehiculoDAO {
         );
         return vehiculo;
     }
+    
+    @Override
+    public boolean liberarVehiculo(int idVehiculo) {
+
+        log.info("Liberando vehículo a Disponible: "+ idVehiculo);
+
+        String sql = "{call sp_liberarvehiculo(?)}";
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql)) {
+            consulta.setInt(
+                    1,idVehiculo
+            );
+            int filasAfectadas = consulta.executeUpdate();
+            boolean liberado = filasAfectadas > 0;
+            if (liberado) {
+                log.info("Vehículo liberado a Disponible: "+ idVehiculo
+                );
+            }
+            return liberado;
+        } catch (SQLException e) {
+            log.log( Level.SEVERE,"Error al liberar el vehículo "+ idVehiculo, e);
+            return false;
+        }
+    }
 }

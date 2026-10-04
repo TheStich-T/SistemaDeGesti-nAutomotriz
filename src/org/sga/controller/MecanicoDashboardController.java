@@ -3,6 +3,7 @@ package org.sga.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -154,6 +155,49 @@ public class MecanicoDashboardController implements Initializable {
         }
     }
 
+    // US-2.4 (T2.18, T2.19, T2.20): liberar a Disponible un vehículo con trabajo terminado
+    @FXML
+    public void eventoLiberar(ActionEvent evento) {
+        Vehiculo vehiculoSeleccionado = tablaCola.getSelectionModel().getSelectedItem();
+
+        if (vehiculoSeleccionado == null) {
+            mostrarAdvertencia("Selecciona un vehículo de la cola.");
+            return;
+        }
+
+        // regla: solo se libera si el trabajo está terminado
+        if (!"terminado".equals(vehiculoSeleccionado.getProgresoTaller())) {
+            mostrarAdvertencia("El vehículo " + vehiculoSeleccionado.getPlaca()
+                    + " aún no tiene el trabajo terminado. Estado actual: "
+                    + convertirEstadoVisible(vehiculoSeleccionado.getProgresoTaller()) + ".");
+            return;
+        }
+
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION,
+                "¿Liberar el vehículo " + vehiculoSeleccionado.getPlaca()
+                + " a Disponible? Saldrá de la cola del taller.",
+                ButtonType.OK, ButtonType.CANCEL);
+        confirmacion.setHeaderText("Confirmar liberación");
+        Optional<ButtonType> respuesta = confirmacion.showAndWait();
+
+        if (respuesta.isEmpty() || respuesta.get() != ButtonType.OK) {
+            return;
+        }
+
+        String placa = vehiculoSeleccionado.getPlaca();
+        boolean liberado = vehiculoDAO.liberarVehiculo(vehiculoSeleccionado.getId());
+
+        if (liberado) {
+            cargarColaTaller();
+            comboEstado.setValue(null);
+            mostrarInformacion("Vehículo liberado", "El vehículo " + placa + " ya está Disponible.");
+        } else {
+            cargarColaTaller();
+            mostrarError("No fue posible liberar el vehículo " + placa
+                    + ". Verifica que esté en taller con el trabajo terminado.");
+        }
+    }
+
     private String convertirEstadoVisible(String estadoBD) {
         if (estadoBD == null) {
             return "Tiene falla";
@@ -174,11 +218,6 @@ public class MecanicoDashboardController implements Initializable {
             case "Trabajo terminado" -> "terminado";
             default -> "pendiente";
         };
-    }
-
-    @FXML
-    public void eventoProximamente(ActionEvent evento) {
-        new Alert(Alert.AlertType.INFORMATION, "Esta función corresponde a la historia de regreso a Disponible.", ButtonType.OK).showAndWait();
     }
 
     @FXML

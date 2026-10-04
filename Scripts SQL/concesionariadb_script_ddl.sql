@@ -294,6 +294,18 @@ begin
       and estado in ('en_taller', 'disponible');
 end $$
 
+-- regla (T2.18) solo si está en_taller y su trabajo está terminado si no cumple, el update no afecta ninguna fila y el DAO devuelve false
+create procedure sp_liberarvehiculo(
+    in _id_vehiculo int
+)
+begin
+    update vehiculos
+    set estado = 'disponible'
+    where id_vehiculo = _id_vehiculo
+      and estado = 'en_taller'
+      and progreso_taller = 'terminado';
+end $$
+
 -- anular ingreso: solo si el auto sigue en_taller o disponible
 create procedure sp_eliminarvehiculo(
     in _id_vehiculo int

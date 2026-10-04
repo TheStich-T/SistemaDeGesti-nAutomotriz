@@ -9,4 +9,5 @@ public interface VehiculoDAO extends CRUD<Vehiculo, Integer> {
     List<Vehiculo> listarColaTaller();
     boolean actualizarProgresoTaller(int idVehiculo, String progresoTaller);
     boolean actualizarOperacionPermitida(int idVehiculo, String operacionPermitida);
+    boolean liberarVehiculo(int idVehiculo);
 }
