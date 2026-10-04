@@ -84,18 +84,15 @@
                 </HBox>
 
                 <TableView fx:id="tablaCola" prefHeight="300.0" VBox.vgrow="ALWAYS">
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                    </columnResizePolicy>
                     <columns>
-                        <TableColumn fx:id="columnaId" prefWidth="45.0" text="ID" />
-                        <TableColumn fx:id="columnaPlaca" prefWidth="90.0" text="Placa" />
-                        <TableColumn fx:id="columnaMarca" prefWidth="100.0" text="Marca" />
-                        <TableColumn fx:id="columnaModelo" prefWidth="100.0" text="Modelo" />
-                        <TableColumn fx:id="columnaAnio" prefWidth="55.0" text="Año" />
-                        <TableColumn fx:id="columnaEstado" prefWidth="140.0" text="Estado" />
-                        <TableColumn fx:id="columnaObservaciones" prefWidth="220.0" text="Observaciones" />
-                        <TableColumn fx:id="columnaFechaIngreso" prefWidth="130.0" text="Fecha de ingreso" />
+                        <TableColumn fx:id="columnaId" prefWidth="40.0" text="ID" />
+                        <TableColumn fx:id="columnaPlaca" prefWidth="85.0" text="Placa" />
+                        <TableColumn fx:id="columnaMarca" prefWidth="95.0" text="Marca" />
+                        <TableColumn fx:id="columnaModelo" prefWidth="95.0" text="Modelo" />
+                        <TableColumn fx:id="columnaAnio" prefWidth="50.0" text="Año" />
+                        <TableColumn fx:id="columnaEstado" prefWidth="130.0" text="Estado" />
+                        <TableColumn fx:id="columnaObservaciones" prefWidth="200.0" text="Observaciones" />
+                        <TableColumn fx:id="columnaFechaIngreso" prefWidth="125.0" text="Fecha de ingreso" />
                     </columns>
                 </TableView>
 
@@ -105,7 +102,7 @@
                         <ComboBox fx:id="comboEstado" prefWidth="220.0" promptText="Seleccionar estado" />
                         <Button mnemonicParsing="false" onAction="#eventoCambiarEstado" prefHeight="36.0" prefWidth="170.0" styleClass="dashboard-card, dashboard-card-alt" text="Cambiar estado" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" onAction="#eventoProximamente" prefHeight="36.0" prefWidth="170.0" styleClass="dashboard-card" text="Liberar a Disponible" />
+                        <Button mnemonicParsing="false" onAction="#eventoLiberar" prefHeight="36.0" prefWidth="170.0" styleClass="dashboard-card" text="Liberar a Disponible" />
                     </children>
                 </HBox>
             </children>
