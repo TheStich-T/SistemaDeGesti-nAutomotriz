@@ -2,12 +2,10 @@
 create database if not exists concesionariadb_in4cm;
 use concesionariadb_in4cm;
 
--- =============================================================================
 -- creación de tablas
--- =============================================================================
 
 create table usuarios (
-	id_usuario int primary key auto_increment,
+    id_usuario int primary key auto_increment,
     username varchar(50) not null unique,
     password_hash varchar(255) not null,
     rol enum('admin', 'provisionador', 'mecanico', 'asesor') not null,
@@ -16,7 +14,7 @@ create table usuarios (
 );
 
 create table clientes (
-	cui bigint primary key,
+    cui bigint primary key,
     nombres varchar(100) not null,
     apellidos varchar(100) not null,
     telefono varchar(15),
@@ -25,10 +23,11 @@ create table clientes (
 );
 
 create table vehiculos (
-	id_vehiculo int primary key auto_increment,
+    id_vehiculo int primary key auto_increment,
     placa varchar(15) not null unique,
     marca varchar(50) not null,
     modelo varchar(50) not null,
+    tipo enum('sedan', 'pickup', 'suv', 'hatchback', 'otro') not null default 'otro',
     anio int not null,
     color varchar(30),
     condicion enum('nuevo', 'usado') not null,
@@ -43,7 +42,7 @@ create table vehiculos (
 );
 
 create table reportes_taller (
-	id_reporte int primary key auto_increment,
+    id_reporte int primary key auto_increment,
     id_vehiculo int,
     id_mecanico int,
     diagnostico text,
@@ -54,7 +53,7 @@ create table reportes_taller (
 );
 
 create table ventas (
-	id_venta int primary key auto_increment,
+    id_venta int primary key auto_increment,
     id_vehiculo int,
     cui_cliente bigint,
     id_asesor int,
@@ -63,7 +62,7 @@ create table ventas (
 );
 
 create table alquileres (
-	id_alquiler int primary key auto_increment,
+    id_alquiler int primary key auto_increment,
     id_vehiculo int,
     cui_cliente bigint,
     id_asesor int,
@@ -74,9 +73,7 @@ create table alquileres (
     fecha_registro timestamp default current_timestamp
 );
 
--- =============================================================================
 -- llaves foráneas
--- =============================================================================
 
 alter table vehiculos
 add constraint fk_v_provisionador foreign key (id_usuario_provisionador) references usuarios(id_usuario) on delete restrict;
@@ -97,9 +94,7 @@ add constraint fk_al_asesor foreign key (id_asesor) references usuarios(id_usuar
 
 use concesionariadb_in4cm;
 
--- =============================================================================
 -- 1. crud: usuarios
--- =============================================================================
 delimiter $$
 
 create procedure sp_insertarusuario(
@@ -149,9 +144,7 @@ end $$
 
 delimiter ;
 
--- =============================================================================
 -- 2. crud: clientes
--- =============================================================================
 delimiter $$
 
 create procedure sp_insertarcliente(
@@ -208,9 +201,7 @@ end $$
 
 delimiter ;
 
--- =============================================================================
 -- 3. crud: vehiculos
--- =============================================================================
 delimiter $$
 
 create procedure sp_insertarvehiculo(
@@ -225,16 +216,19 @@ create procedure sp_insertarvehiculo(
     in _observaciones text,
     in _estado varchar(20),
     in _id_usuario_provisionador int,
-    in _operacion_permitida varchar(10)
+    in _operacion_permitida varchar(10),
+    in _tipo varchar(20)
 )
 begin
-    insert into vehiculos(placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, id_usuario_provisionador, operacion_permitida)
-    values (_placa, _marca, _modelo, _anio, _color, _condicion, _proveedor, _costo, _observaciones, _estado, _id_usuario_provisionador, _operacion_permitida);
+    -- si el vehículo entra directo a Disponible, el taller no tiene nada pendiente: 'terminado'
+    insert into vehiculos(placa, marca, modelo, tipo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, operacion_permitida)
+    values (_placa, _marca, _modelo, _tipo, _anio, _color, _condicion, _proveedor, _costo, _observaciones, _estado,
+            if(_estado = 'disponible', 'terminado', 'pendiente'), _id_usuario_provisionador, _operacion_permitida);
 end $$
 
 create procedure sp_listarvehiculos()
 begin
-    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso, operacion_permitida
+    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso, operacion_permitida, tipo
     from vehiculos;
 end $$
 
@@ -242,7 +236,7 @@ create procedure sp_buscarvehiculo(
     in _id_vehiculo int
 )
 begin
-    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso, operacion_permitida
+    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso, operacion_permitida, tipo
     from vehiculos
     where id_vehiculo = _id_vehiculo;
 end $$
@@ -252,7 +246,7 @@ create procedure sp_buscarvehiculoporplaca(
     in _placa varchar(15)
 )
 begin
-    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso, operacion_permitida
+    select id_vehiculo, placa, marca, modelo, anio, color, condicion, proveedor, costo, observaciones, estado, progreso_taller, id_usuario_provisionador, fecha_ingreso, operacion_permitida, tipo
     from vehiculos
     where placa = _placa;
 end $$
@@ -267,7 +261,9 @@ create procedure sp_actualizarvehiculo(
     in _condicion varchar(10),
     in _proveedor varchar(100),
     in _costo decimal(10,2),
-    in _observaciones text
+    in _observaciones text,
+    in _operacion_permitida varchar(10),
+    in _tipo varchar(20)
 )
 begin
     update vehiculos
@@ -279,7 +275,21 @@ begin
         condicion = _condicion,
         proveedor = _proveedor,
         costo = _costo,
-        observaciones = _observaciones
+        observaciones = _observaciones,
+        operacion_permitida = _operacion_permitida,
+        tipo = _tipo
+    where id_vehiculo = _id_vehiculo
+      and estado in ('en_taller', 'disponible');
+end $$
+
+-- solo si el vehículo sigue en_taller o disponible (uno vendido o alquilado no se toca)
+create procedure sp_actualizaroperacionvehiculo(
+    in _id_vehiculo int,
+    in _operacion_permitida varchar(10)
+)
+begin
+    update vehiculos
+    set operacion_permitida = _operacion_permitida
     where id_vehiculo = _id_vehiculo
       and estado in ('en_taller', 'disponible');
 end $$
@@ -296,9 +306,7 @@ end $$
 
 delimiter ;
 
--- =============================================================================
 -- 4. crud: reportes_taller
--- =============================================================================
 delimiter $$
 
 create procedure sp_insertarreportetaller(
@@ -354,9 +362,7 @@ end $$
 
 delimiter ;
 
--- =============================================================================
 -- 5. crud: ventas
--- =============================================================================
 delimiter $$
 
 create procedure sp_insertarventa(
@@ -401,9 +407,7 @@ end $$
 
 delimiter ;
 
--- =============================================================================
 -- 6. crud: alquileres
--- =============================================================================
 delimiter $$
 
 create procedure sp_insertaralquiler(
@@ -457,9 +461,7 @@ end $$
 
 delimiter ;
 
--- =============================================================================
 -- 7. procedimientos de negocio (cambian el estado del vehículo)
--- =============================================================================
 delimiter $$
 
 -- asesor: vender un vehículo disponible
@@ -534,7 +536,8 @@ begin
         progreso_taller,
         id_usuario_provisionador,
         fecha_ingreso,
-        operacion_permitida
+        operacion_permitida,
+        tipo
     from vehiculos
     where estado = 'en_taller'
     order by fecha_ingreso asc;
@@ -570,9 +573,7 @@ delimiter ;
 
 use concesionariadb_in4cm;
 
--- =============================================================================
 -- vistas
--- =============================================================================
 
 create or replace view vw_lista_usuarios as
 select
@@ -598,6 +599,7 @@ select
     v.placa as 'placa',
     v.marca as 'marca',
     v.modelo as 'modelo',
+    v.tipo as 'tipo',
     v.anio as 'año',
     v.color as 'color',
     v.condicion as 'condición',

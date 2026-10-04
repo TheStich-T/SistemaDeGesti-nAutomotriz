@@ -2,8 +2,10 @@ package org.sga.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,8 +29,12 @@ import org.sga.system.Main;
 
 public class MecanicoDashboardController implements Initializable {
 
+    private static final DateTimeFormatter FORMATO_FECHA
+            = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
     @FXML private Label lblBienvenida;
     @FXML private Label lblUsuarioSidebar;
+    @FXML private Label lblConteoCola;
     @FXML private TableView<Vehiculo> tablaCola;
     @FXML private TableColumn<Vehiculo, Integer> columnaId;
     @FXML private TableColumn<Vehiculo, String> columnaPlaca;
@@ -36,6 +42,8 @@ public class MecanicoDashboardController implements Initializable {
     @FXML private TableColumn<Vehiculo, String> columnaModelo;
     @FXML private TableColumn<Vehiculo, Integer> columnaAnio;
     @FXML private TableColumn<Vehiculo, String> columnaEstado;
+    @FXML private TableColumn<Vehiculo, String> columnaObservaciones;
+    @FXML private TableColumn<Vehiculo, String> columnaFechaIngreso;
     @FXML private ComboBox<String> comboEstado;
 
     private final VehiculoDAO vehiculoDAO = new VehiculoDAOImpl();
@@ -63,7 +71,22 @@ public class MecanicoDashboardController implements Initializable {
         columnaMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
         columnaModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
         columnaAnio.setCellValueFactory(new PropertyValueFactory<>("anio"));
-        columnaEstado.setCellValueFactory(new PropertyValueFactory<>("progresoTaller"));
+
+        // T2.16: la tabla muestra los mismos nombres que el combo
+        columnaEstado.setCellValueFactory(dato
+                -> new SimpleStringProperty(convertirEstadoVisible(dato.getValue().getProgresoTaller())));
+
+        columnaObservaciones.setCellValueFactory(dato -> {
+            String observaciones = dato.getValue().getObservaciones();
+            return new SimpleStringProperty(observaciones != null ? observaciones : "");
+        });
+
+        columnaFechaIngreso.setCellValueFactory(dato -> {
+            if (dato.getValue().getFechaIngreso() == null) {
+                return new SimpleStringProperty("");
+            }
+            return new SimpleStringProperty(dato.getValue().getFechaIngreso().format(FORMATO_FECHA));
+        });
 
         tablaCola.setItems(listaCola);
 
@@ -85,17 +108,13 @@ public class MecanicoDashboardController implements Initializable {
     private void cargarColaTaller() {
         listaCola.clear();
         listaCola.addAll(vehiculoDAO.listarColaTaller());
+        lblConteoCola.setText(listaCola.size() + " vehículo(s) en cola");
     }
 
+    // Recarga la cola en silencio (sin popup); el conteo se ve en pantalla
     @FXML
     public void eventoMostrarCola(ActionEvent evento) {
         cargarColaTaller();
-
-        if (listaCola.isEmpty()) {
-            mostrarInformacion("Cola de taller", "No hay vehículos actualmente en la cola del taller.");
-        } else {
-            mostrarInformacion("Cola de taller", "Se cargaron " + listaCola.size() + " vehículo(s) en la cola.");
-        }
     }
 
     @FXML
@@ -115,14 +134,21 @@ public class MecanicoDashboardController implements Initializable {
         }
 
         String progresoBD = convertirEstadoBD(estadoSeleccionado);
+
+        // no tiene sentido "cambiar" al mismo estado que ya tiene
+        if (progresoBD.equals(vehiculoSeleccionado.getProgresoTaller())) {
+            mostrarAdvertencia("El vehículo " + vehiculoSeleccionado.getPlaca()
+                    + " ya tiene el estado: " + estadoSeleccionado + ".");
+            return;
+        }
+
         boolean actualizado = vehiculoDAO.actualizarProgresoTaller(vehiculoSeleccionado.getId(), progresoBD);
 
         if (actualizado) {
-            vehiculoSeleccionado.setProgresoTaller(progresoBD);
-            tablaCola.refresh();
+            String placa = vehiculoSeleccionado.getPlaca();
             cargarColaTaller();
-
-            mostrarInformacion("Estado actualizado", "El vehículo con placa " + vehiculoSeleccionado.getPlaca() + " ahora tiene el estado: " + estadoSeleccionado);
+            comboEstado.setValue(null);
+            mostrarInformacion("Estado actualizado", "El vehículo con placa " + placa + " ahora tiene el estado: " + estadoSeleccionado);
         } else {
             mostrarError("No fue posible actualizar el estado del vehículo.");
         }

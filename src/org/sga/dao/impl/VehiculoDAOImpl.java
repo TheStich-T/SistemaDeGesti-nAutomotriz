@@ -28,7 +28,7 @@ public class VehiculoDAOImpl implements VehiculoDAO {
                 + objeto.getEstado());
 
         String sql
-                = "{call sp_insertarvehiculo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+                = "{call sp_insertarvehiculo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
         try (Connection conexion
                 = Conexion.getInstancia().conectar(); CallableStatement consulta
@@ -52,6 +52,7 @@ public class VehiculoDAOImpl implements VehiculoDAO {
             consulta.setString(10, objeto.getEstado());
             consulta.setInt(11, objeto.getIdUsuarioProvisionador());
             consulta.setString(12, objeto.getOperacionPermitida());
+            consulta.setString(13, objeto.getTipo());
 
             int filasAfectadas
                     = consulta.executeUpdate();
@@ -214,7 +215,7 @@ public class VehiculoDAOImpl implements VehiculoDAO {
         );
 
         String sql
-                = "{call sp_actualizarvehiculo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+                = "{call sp_actualizarvehiculo(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
         try (Connection conexion
                 = Conexion.getInstancia().conectar(); CallableStatement consulta
@@ -244,6 +245,9 @@ public class VehiculoDAOImpl implements VehiculoDAO {
                         Types.VARCHAR
                 );
             }
+
+            consulta.setString(11, objeto.getOperacionPermitida());
+            consulta.setString(12, objeto.getTipo());
 
             int filasAfectadas
                     = consulta.executeUpdate();
@@ -418,6 +422,63 @@ public class VehiculoDAOImpl implements VehiculoDAO {
         }
     }
 
+    @Override
+    public boolean actualizarOperacionPermitida(
+            int idVehiculo,
+            String operacionPermitida) {
+
+        log.info(
+                "Cambiando operación permitida del vehículo "
+                + idVehiculo
+                + " a "
+                + operacionPermitida
+        );
+
+        String sql
+                = "{call sp_actualizaroperacionvehiculo(?, ?)}";
+
+        try (Connection conexion
+                = Conexion.getInstancia().conectar(); CallableStatement consulta
+                = conexion.prepareCall(sql)) {
+
+            consulta.setInt(
+                    1,
+                    idVehiculo
+            );
+
+            consulta.setString(
+                    2,
+                    operacionPermitida
+            );
+
+            int filasAfectadas
+                    = consulta.executeUpdate();
+
+            boolean actualizado
+                    = filasAfectadas > 0;
+
+            if (actualizado) {
+
+                log.info(
+                        "Operación permitida actualizada correctamente."
+                );
+            }
+
+            return actualizado;
+
+        } catch (SQLException e) {
+
+            log.log(
+                    Level.SEVERE,
+                    "Error al cambiar la operación permitida del vehículo "
+                    + idVehiculo,
+                    e
+            );
+
+            return false;
+        }
+    }
+
     private Vehiculo mapearVehiculo(
             ResultSet tablaResultado)
             throws SQLException {
@@ -480,6 +541,9 @@ public class VehiculoDAOImpl implements VehiculoDAO {
         }
         vehiculo.setOperacionPermitida(
                 tablaResultado.getString(15)
+        );
+        vehiculo.setTipo(
+                tablaResultado.getString(16)
         );
         return vehiculo;
     }

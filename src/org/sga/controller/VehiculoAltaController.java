@@ -33,6 +33,11 @@ public class VehiculoAltaController implements Initializable {
     private static final String OPERACION_VENTA = "Venta";
     private static final String OPERACION_ALQUILER = "Alquiler";
     private static final String OPERACION_AMBAS = "Ambas";
+    private static final String TIPO_SEDAN = "Sedán";
+    private static final String TIPO_PICKUP = "Pickup";
+    private static final String TIPO_SUV = "SUV";
+    private static final String TIPO_HATCHBACK = "Hatchback";
+    private static final String TIPO_OTRO = "Otro";
     private static final BigDecimal COSTO_MAXIMO = new BigDecimal("99999999.99");
     private static final int ANIO_MINIMO = 1950;
 
@@ -40,6 +45,7 @@ public class VehiculoAltaController implements Initializable {
     @FXML private TableColumn<Vehiculo, String> colPlaca;
     @FXML private TableColumn<Vehiculo, String> colMarca;
     @FXML private TableColumn<Vehiculo, String> colModelo;
+    @FXML private TableColumn<Vehiculo, String> colTipo;
     @FXML private TableColumn<Vehiculo, String> colAnio;
     @FXML private TableColumn<Vehiculo, String> colCondicion;
     @FXML private TableColumn<Vehiculo, String> colCosto;
@@ -49,6 +55,7 @@ public class VehiculoAltaController implements Initializable {
     @FXML private TextField txtPlaca;
     @FXML private TextField txtMarca;
     @FXML private TextField txtModelo;
+    @FXML private ComboBox<String> cmbTipo;
     @FXML private TextField txtAnio;
     @FXML private TextField txtColor;
     @FXML private ComboBox<String> cmbCondicion;
@@ -56,6 +63,7 @@ public class VehiculoAltaController implements Initializable {
     @FXML private TextField txtCosto;
     @FXML private ComboBox<String> cmbDestino;
     @FXML private ComboBox<String> cmbOperacion;
+    @FXML private ComboBox<String> cmbNuevaOperacion;
     @FXML private TextField txtObservaciones;
     @FXML private Label lblMensaje;
 
@@ -65,13 +73,17 @@ public class VehiculoAltaController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         vehiculoDAO = new VehiculoDAOImpl();
         cmbCondicion.setItems(FXCollections.observableArrayList("nuevo", "usado"));
+        cmbTipo.setItems(FXCollections.observableArrayList(TIPO_SEDAN, TIPO_PICKUP, TIPO_SUV, TIPO_HATCHBACK, TIPO_OTRO));
         cmbDestino.setItems(FXCollections.observableArrayList(DESTINO_DISPONIBLE, DESTINO_TALLER));
         cmbOperacion.setItems(FXCollections.observableArrayList(OPERACION_VENTA, OPERACION_ALQUILER, OPERACION_AMBAS));
+        cmbNuevaOperacion.setItems(FXCollections.observableArrayList(OPERACION_VENTA, OPERACION_ALQUILER, OPERACION_AMBAS));
         lblMensaje.setText("");
 
         colPlaca.setCellValueFactory(dato -> new SimpleStringProperty(dato.getValue().getPlaca()));
         colMarca.setCellValueFactory(dato -> new SimpleStringProperty(dato.getValue().getMarca()));
         colModelo.setCellValueFactory(dato -> new SimpleStringProperty(dato.getValue().getModelo()));
+        colTipo.setCellValueFactory(dato
+                -> new SimpleStringProperty(textoTipo(dato.getValue().getTipo())));
         colAnio.setCellValueFactory(dato -> new SimpleStringProperty(String.valueOf(dato.getValue().getAnio())));
         colCondicion.setCellValueFactory(dato -> new SimpleStringProperty(dato.getValue().getCondicion()));
         colCosto.setCellValueFactory(dato
@@ -80,6 +92,14 @@ public class VehiculoAltaController implements Initializable {
                 -> new SimpleStringProperty(textoEstado(dato.getValue().getEstado())));
         colOperacion.setCellValueFactory(dato
                 -> new SimpleStringProperty(textoOperacion(dato.getValue().getOperacionPermitida())));
+
+        // al elegir un vehículo se muestra su operación actual para poder cambiarla
+        tblVehiculos.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionado) -> {
+            if (seleccionado != null) {
+                cmbNuevaOperacion.setValue(textoOperacion(seleccionado.getOperacionPermitida()));
+                lblMensaje.setText("");
+            }
+        });
 
         cargarVehiculos();
     }
@@ -91,12 +111,13 @@ public class VehiculoAltaController implements Initializable {
     @FXML
     public void eventoRegistrar(ActionEvent evento) {
         try {
-           
+
             ValidarException.validarNoVacio(txtPlaca.getText(), "placa");
             ValidarException.validarNoVacio(txtMarca.getText(), "marca");
             ValidarException.validarNoVacio(txtModelo.getText(), "modelo");
             ValidarException.validarNoVacio(txtAnio.getText(), "año");
             ValidarException.validarNoVacio(txtCosto.getText(), "precio / costo");
+            ValidarException.validarNulo(cmbTipo.getValue(), "Debe seleccionar el tipo de vehículo (sedán, pickup, SUV...).");
             ValidarException.validarNulo(cmbCondicion.getValue(), "Debe seleccionar la condición del vehículo.");
             ValidarException.validarNulo(cmbDestino.getValue(), "Debe seleccionar el destino inicial del vehículo.");
             ValidarException.validarNulo(cmbOperacion.getValue(), "Debe seleccionar la operación permitida del vehículo (venta, alquiler o ambas).");
@@ -136,11 +157,12 @@ public class VehiculoAltaController implements Initializable {
 
             Usuario actual = SessionContext.getInstancia().getUsuarioActual();
             ValidarException.validarNulo(actual, "No hay una sesión activa. Inicia sesión nuevamente.");
-            
+
             Vehiculo nuevoVehiculo = new Vehiculo();
             nuevoVehiculo.setPlaca(placa);
             nuevoVehiculo.setMarca(marca);
             nuevoVehiculo.setModelo(modelo);
+            nuevoVehiculo.setTipo(valorTipo(cmbTipo.getValue()));
             nuevoVehiculo.setAnio(anio);
             nuevoVehiculo.setColor(color.isEmpty() ? null : color);
             nuevoVehiculo.setCondicion(cmbCondicion.getValue());
@@ -160,6 +182,41 @@ public class VehiculoAltaController implements Initializable {
                 cargarVehiculos();
             } else {
                 mostrarAlerta(Alert.AlertType.ERROR, "No se pudo registrar el vehículo.");
+            }
+
+        } catch (ValidarException e) {
+            mostrarAlerta(Alert.AlertType.WARNING, e.getMessage());
+            lblMensaje.setText(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void eventoCambiarOperacion(ActionEvent evento) {
+        try {
+            Vehiculo seleccionado = tblVehiculos.getSelectionModel().getSelectedItem();
+            ValidarException.validarNulo(seleccionado, "Selecciona un vehículo de la tabla.");
+            ValidarException.validarNulo(cmbNuevaOperacion.getValue(), "Selecciona la nueva operación permitida (venta, alquiler o ambas).");
+
+            String nuevaOperacion = valorOperacion(cmbNuevaOperacion.getValue());
+
+            if (nuevaOperacion.equals(seleccionado.getOperacionPermitida())) {
+                throw new ValidarException("El vehículo " + seleccionado.getPlaca() + " ya tiene esa operación permitida.");
+            }
+
+            // solo se puede cambiar si el vehículo sigue en taller o disponible
+            String estado = seleccionado.getEstado();
+            if (!"en_taller".equals(estado) && !"disponible".equals(estado)) {
+                throw new ValidarException("Solo se puede cambiar la operación de un vehículo en taller o disponible. "
+                        + "Este vehículo está: " + textoEstado(estado).toLowerCase() + ".");
+            }
+
+            if (vehiculoDAO.actualizarOperacionPermitida(seleccionado.getId(), nuevaOperacion)) {
+                mostrarAlerta(Alert.AlertType.INFORMATION, "Operación del vehículo " + seleccionado.getPlaca()
+                        + " actualizada a: " + cmbNuevaOperacion.getValue() + ".");
+                limpiarCampos();
+                cargarVehiculos();
+            } else {
+                mostrarAlerta(Alert.AlertType.ERROR, "No se pudo cambiar la operación del vehículo.");
             }
 
         } catch (ValidarException e) {
@@ -242,6 +299,30 @@ public class VehiculoAltaController implements Initializable {
         };
     }
 
+    private String textoTipo(String tipo) {
+        if (tipo == null) {
+            return "";
+        }
+        return switch (tipo) {
+            case "sedan" -> TIPO_SEDAN;
+            case "pickup" -> TIPO_PICKUP;
+            case "suv" -> TIPO_SUV;
+            case "hatchback" -> TIPO_HATCHBACK;
+            case "otro" -> TIPO_OTRO;
+            default -> tipo;
+        };
+    }
+
+    private String valorTipo(String textoSeleccionado) {
+        return switch (textoSeleccionado) {
+            case TIPO_SEDAN -> "sedan";
+            case TIPO_PICKUP -> "pickup";
+            case TIPO_SUV -> "suv";
+            case TIPO_HATCHBACK -> "hatchback";
+            default -> "otro";
+        };
+    }
+
     private String valorOperacion(String textoSeleccionado) {
         return switch (textoSeleccionado) {
             case OPERACION_VENTA -> "venta";
@@ -254,13 +335,15 @@ public class VehiculoAltaController implements Initializable {
         txtPlaca.clear();
         txtMarca.clear();
         txtModelo.clear();
+        cmbTipo.setValue(null);
         txtAnio.clear();
         txtColor.clear();
         cmbCondicion.setValue(null);
         txtProveedor.clear();
         txtCosto.clear();
         cmbDestino.setValue(null);
-        cmbOperacion.setValue(null); 
+        cmbOperacion.setValue(null);
+        cmbNuevaOperacion.setValue(null);
         txtObservaciones.clear();
         lblMensaje.setText("");
         tblVehiculos.getSelectionModel().clearSelection();

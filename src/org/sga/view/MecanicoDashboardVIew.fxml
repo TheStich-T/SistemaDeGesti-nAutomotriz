@@ -8,11 +8,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="700.0" prefWidth="1100.0" styleClass="dashboard-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sga.controller.MecanicoDashboardController">
@@ -38,8 +35,6 @@
                     </VBox.margin>
                     <children>
                         <Label styleClass="sidebar-link-active" text="Menú principal" />
-                        <Label styleClass="sidebar-link" text="Taller" />
-                        <Label styleClass="sidebar-link" text="Cola de trabajo" />
                     </children>
                 </VBox>
                 <Region VBox.vgrow="ALWAYS" />
@@ -75,40 +70,42 @@
                 </Label>
                 <Label styleClass="welcome-subtitle" text="Cola y estados del taller">
                     <VBox.margin>
-                        <Insets bottom="15.0" />
+                        <Insets bottom="5.0" />
                     </VBox.margin>
                 </Label>
-                <GridPane hgap="16.0" vgap="16.0">
-                    <columnConstraints>
-                        <ColumnConstraints minWidth="180.0" prefWidth="220.0" />
-                        <ColumnConstraints minWidth="180.0" prefWidth="220.0" />
-                        <ColumnConstraints minWidth="180.0" prefWidth="220.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="70.0" prefHeight="80.0" />
-                    </rowConstraints>
+
+                <HBox alignment="CENTER_LEFT" spacing="14.0">
                     <children>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoMostrarCola" styleClass="dashboard-card" text="Cola de vehículos" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoCambiarEstado" styleClass="dashboard-card, dashboard-card-alt" text="Cambiar estado de trabajo" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Liberar a Disponible" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Label styleClass="indicator-label" text="VEHÍCULOS EN COLA DE TALLER" />
+                        <Label fx:id="lblConteoCola" styleClass="welcome-subtitle" text="" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#eventoMostrarCola" prefHeight="32.0" prefWidth="150.0" styleClass="dashboard-card" text="Actualizar cola" />
                     </children>
-                </GridPane>
-                <Label styleClass="indicator-label" text="VEHÍCULOS EN COLA DE TALLER" />
+                </HBox>
+
                 <TableView fx:id="tablaCola" prefHeight="300.0" VBox.vgrow="ALWAYS">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
                     <columns>
-                        <TableColumn fx:id="columnaId" prefWidth="55.0" text="ID" />
-                        <TableColumn fx:id="columnaPlaca" prefWidth="100.0" text="Placa" />
-                        <TableColumn fx:id="columnaMarca" prefWidth="120.0" text="Marca" />
-                        <TableColumn fx:id="columnaModelo" prefWidth="120.0" text="Modelo" />
-                        <TableColumn fx:id="columnaAnio" prefWidth="70.0" text="Año" />
-                        <TableColumn fx:id="columnaEstado" prefWidth="160.0" text="Estado" />
+                        <TableColumn fx:id="columnaId" prefWidth="45.0" text="ID" />
+                        <TableColumn fx:id="columnaPlaca" prefWidth="90.0" text="Placa" />
+                        <TableColumn fx:id="columnaMarca" prefWidth="100.0" text="Marca" />
+                        <TableColumn fx:id="columnaModelo" prefWidth="100.0" text="Modelo" />
+                        <TableColumn fx:id="columnaAnio" prefWidth="55.0" text="Año" />
+                        <TableColumn fx:id="columnaEstado" prefWidth="140.0" text="Estado" />
+                        <TableColumn fx:id="columnaObservaciones" prefWidth="220.0" text="Observaciones" />
+                        <TableColumn fx:id="columnaFechaIngreso" prefWidth="130.0" text="Fecha de ingreso" />
                     </columns>
                 </TableView>
+
                 <HBox alignment="CENTER_LEFT" spacing="12.0">
                     <children>
                         <Label styleClass="indicator-label" text="Nuevo estado:" />
                         <ComboBox fx:id="comboEstado" prefWidth="220.0" promptText="Seleccionar estado" />
-                        <Label styleClass="welcome-subtitle" text="Selecciona un vehículo y cambia su estado." />
+                        <Button mnemonicParsing="false" onAction="#eventoCambiarEstado" prefHeight="36.0" prefWidth="170.0" styleClass="dashboard-card, dashboard-card-alt" text="Cambiar estado" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#eventoProximamente" prefHeight="36.0" prefWidth="170.0" styleClass="dashboard-card" text="Liberar a Disponible" />
                     </children>
                 </HBox>
             </children>
