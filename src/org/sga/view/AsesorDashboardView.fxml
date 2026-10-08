@@ -107,6 +107,7 @@
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoHistorialVentas" styleClass="dashboard-card" text="Mi historial de ventas" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Registrar alquiler" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Registrar devolución" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoRegistrarAlquiler" styleClass="dashboard-card, dashboard-card-alt" text="Registrar alquiler" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                     </children>
                 </GridPane>
             </children>
