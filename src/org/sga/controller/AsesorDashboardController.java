@@ -38,4 +38,32 @@ public class AsesorDashboardController implements Initializable {
             new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
         }
     }
+    
+    @FXML
+    public void eventoBuscarVehiculos(ActionEvent evento) {
+        try {
+            Main.cambiarEscena("/org/sga/view/BuscarVehiculosView.fxml");
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
+        }
+    }
+
+    @FXML
+    public void eventoRegistrarVenta(ActionEvent evento) {
+        try {
+            Main.cambiarEscena("/org/sga/view/VentaView.fxml");
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
+        }
+    }
+
+    @FXML
+    public void eventoHistorialVentas(ActionEvent evento) {
+        try {
+            Main.cambiarEscena("/org/sga/view/HistorialVentasView.fxml");
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
+        }
+    }
+    
 }
