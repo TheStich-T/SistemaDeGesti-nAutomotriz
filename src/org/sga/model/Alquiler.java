@@ -1,13 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.sga.model;
 
-/**
- *
- * @author informatica
- */
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class Alquiler {
-    
+
+    private int id;
+    private int idVehiculo;
+    private long cuiCliente;
+    private int idAsesor;
+    private LocalDate fechaSalida;
+    private LocalDate fechaRegreso;
+    private boolean llevaSeguro;
+    private LocalDate fechaDevolucionReal;
+    private LocalDateTime fechaRegistro;
+
 }
+
