@@ -65,5 +65,13 @@ public class AsesorDashboardController implements Initializable {
             new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
         }
     }
+        @FXML
+    public void eventoRegistrarAlquiler(ActionEvent evento) {
+        try {
+            Main.cambiarEscena("/org/sga/view/AlquilerView.fxml");
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
+        }
+    }
     
 }
