@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,5 +174,31 @@ public class AlquilerDAOImpl implements AlquilerDAO {
             log.log(Level.SEVERE, "Error al eliminar alquiler: " + id, e);
             return false;
         }
+    }
+
+    private Alquiler mapearAlquiler(ResultSet tablaResultado) throws SQLException {
+        Alquiler alquiler = new Alquiler();
+        alquiler.setId(tablaResultado.getInt(1));
+        alquiler.setIdVehiculo(tablaResultado.getInt(2));
+        alquiler.setCuiCliente(tablaResultado.getLong(3));
+        alquiler.setIdAsesor(tablaResultado.getInt(4));
+        Date salida = tablaResultado.getDate(5);
+        if (salida != null) {
+            alquiler.setFechaSalida(salida.toLocalDate());
+        }
+        Date regreso = tablaResultado.getDate(6);
+        if (regreso != null) {
+            alquiler.setFechaRegreso(regreso.toLocalDate());
+        }
+        alquiler.setLlevaSeguro(tablaResultado.getBoolean(7));
+        Date devolucion = tablaResultado.getDate(8);
+        if (devolucion != null) {
+            alquiler.setFechaDevolucionReal(devolucion.toLocalDate());
+        }
+        Timestamp registro = tablaResultado.getTimestamp(9);
+        if (registro != null) {
+            alquiler.setFechaRegistro(registro.toLocalDateTime());
+        }
+        return alquiler;
     }
 }
