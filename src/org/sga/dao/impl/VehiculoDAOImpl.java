@@ -572,4 +572,39 @@ public class VehiculoDAOImpl implements VehiculoDAO {
             return false;
         }
     }
+    
+     @Override
+    public List<Vehiculo> buscarDisponibles(String criterio, String operacion) {
+
+        log.info("Buscando vehículos disponibles. Criterio: " + criterio
+                + ", operación: " + operacion);
+
+        List<Vehiculo> vehiculos = new ArrayList<>();
+        String sql = "{call sp_buscarvehiculosdisponibles(?, ?)}";
+
+        try (Connection conexion = Conexion.getInstancia().conectar();
+             CallableStatement consulta = conexion.prepareCall(sql)) {
+
+            consulta.setString(1, criterio);
+
+            if (operacion != null) {
+                consulta.setString(2, operacion);
+            } else {
+                consulta.setNull(2, Types.VARCHAR);
+            }
+
+            try (ResultSet tablaResultado = consulta.executeQuery()) {
+                while (tablaResultado.next()) {
+                    vehiculos.add(mapearVehiculo(tablaResultado));
+                }
+            }
+
+            log.info("Vehículos disponibles encontrados: " + vehiculos.size());
+
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "Error al buscar vehículos disponibles", e);
+        }
+
+        return vehiculos;
+    }
 }
