@@ -13,7 +13,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.sga.controller.HistorialVentasController">
     <stylesheets>
-        <URL value="@/org/sga/view/style/ventasview.css" />
+        <URL value="@style/buscarvehiculosview.css" />
     </stylesheets>
     <children>
 

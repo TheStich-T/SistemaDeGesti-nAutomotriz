@@ -14,9 +14,9 @@
             xmlns="http://javafx.com/javafx/21.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.sga.controller.BuscarVehiculosController">
-    <stylesheets>
-        <URL value="@/org/sga/view/style/ventasview.css" />
-    </stylesheets>
+   <stylesheets>
+    <URL value="@style/buscarvehiculosview.css" />
+</stylesheets>
     <children>
 
         <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" onAction="#eventoVolver" prefHeight="25.0" prefWidth="89.0" text="Regresar" />
@@ -24,7 +24,7 @@
         <Label layoutX="215.0" layoutY="15.0" styleClass="page-title" text="Buscar Vehículos Disponibles">
             <font>
                 <Font size="22.0" />
-            </font>s
+            </font>
         </Label>
 
         <Label layoutX="30.0" layoutY="72.0" styleClass="field-label" text="Marca, modelo o placa" />

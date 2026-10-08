@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
- 
+
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -12,8 +12,8 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
- 
-<BorderPane prefHeight="620.0" prefWidth="940.0" styleClass="dashboard-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sga.controller.AsesorDashboardController">
+
+<BorderPane prefHeight="620.0" prefWidth="940.0" styleClass="dashboard-root" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sga.controller.AsesorDashboardController">
     <stylesheets>
         <URL value="@/org/sga/view/style/asesordashboardview.css" />
     </stylesheets>
@@ -102,9 +102,9 @@
                         <RowConstraints minHeight="70.0" prefHeight="80.0" />
                     </rowConstraints>
                     <children>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Buscar vehículos disponibles" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Registrar venta" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Mi historial de ventas" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoBuscarVehiculos" styleClass="dashboard-card" text="Buscar vehículos disponibles" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoRegistrarVenta" styleClass="dashboard-card, dashboard-card-alt" text="Registrar venta" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoHistorialVentas" styleClass="dashboard-card" text="Mi historial de ventas" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Registrar alquiler" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Registrar devolución" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     </children>
