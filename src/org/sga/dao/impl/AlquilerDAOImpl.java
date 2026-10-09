@@ -142,6 +142,99 @@ public class AlquilerDAOImpl implements AlquilerDAO {
     }
 
     @Override
+    public List<Alquiler> listarActivos() {
+        log.info("Listando alquileres activos");
+        List<Alquiler> alquileres = new ArrayList<>();
+        String sql = "{call sp_listaralquileresactivos()}";
+        try (Connection conexion = Conexion.getInstancia().conectar();
+             CallableStatement consulta = conexion.prepareCall(sql);
+             ResultSet tablaResultado = consulta.executeQuery()) {
+            while (tablaResultado.next()) {
+                Alquiler alquiler = mapearAlquiler(tablaResultado);
+                // el SP agrega: placa, descripción, cliente, tarifa por día, días de atraso y cobro adicional
+                alquiler.setPlaca(tablaResultado.getString(10));
+                alquiler.setDescripcionVehiculo(tablaResultado.getString(11));
+                alquiler.setNombreCliente(tablaResultado.getString(12));
+                alquiler.setPrecioDia(tablaResultado.getBigDecimal(13));
+                alquiler.setDiasAtraso(tablaResultado.getInt(14));
+                alquiler.setCobroAdicional(tablaResultado.getBigDecimal(15));
+                alquileres.add(alquiler);
+            }
+            log.info("Alquileres activos listados correctamente: " + alquileres.size());
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "Error al listar alquileres activos", e);
+        }
+        return alquileres;
+    }
+
+    @Override
+    public boolean registrarDevolucion(Alquiler alquiler) {
+        log.info("Registrando devolución con transacción. Alquiler: " + alquiler.getId()
+                + ", vehículo: " + alquiler.getIdVehiculo());
+        Connection conexion = null;
+        try {
+            conexion = Conexion.getInstancia().conectar();
+            conexion.setAutoCommit(false);
+
+            try (CallableStatement registrarDevolucion = conexion.prepareCall("{call sp_registrardevolucion(?, ?, ?, ?, ?)}");
+                 CallableStatement marcarDisponible = conexion.prepareCall("{call sp_marcarvehiculodisponible(?)}")) {
+
+                registrarDevolucion.setInt(1, alquiler.getId());
+                registrarDevolucion.registerOutParameter(2, Types.VARCHAR);
+                registrarDevolucion.registerOutParameter(3, Types.INTEGER);
+                registrarDevolucion.registerOutParameter(4, Types.DECIMAL);
+                registrarDevolucion.registerOutParameter(5, Types.TIMESTAMP);
+                registrarDevolucion.execute();
+
+                String estado = registrarDevolucion.getString(2);
+                if (estado == null) {
+                    conexion.rollback();
+                    log.warning("El alquiler " + alquiler.getId() + " no existe o ya fue devuelto");
+                    return false;
+                }
+
+                marcarDisponible.setInt(1, alquiler.getIdVehiculo());
+                if (marcarDisponible.executeUpdate() == 0) {
+                    conexion.rollback();
+                    log.warning("El vehículo " + alquiler.getIdVehiculo() + " no estaba en alquiler");
+                    return false;
+                }
+
+                conexion.commit();
+                alquiler.setEstadoDevolucion(estado);
+                alquiler.setDiasAtraso(registrarDevolucion.getInt(3));
+                alquiler.setCobroAdicional(registrarDevolucion.getBigDecimal(4));
+                Timestamp fechaHora = registrarDevolucion.getTimestamp(5);
+                if (fechaHora != null) {
+                    alquiler.setFechaHoraDevolucion(fechaHora.toLocalDateTime());
+                }
+                log.info("Devolución registrada (" + estado + ") y vehículo marcado como disponible: "
+                        + alquiler.getIdVehiculo());
+                return true;
+            }
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "Error al registrar la devolución del alquiler: " + alquiler.getId(), e);
+            if (conexion != null) {
+                try {
+                    conexion.rollback();
+                } catch (SQLException ex) {
+                    log.log(Level.SEVERE, "Error al revertir la transacción de devolución", ex);
+                }
+            }
+            return false;
+        } finally {
+            if (conexion != null) {
+                try {
+                    conexion.setAutoCommit(true);
+                    conexion.close();
+                } catch (SQLException e) {
+                    log.log(Level.WARNING, "Error al cerrar la conexión de devolución", e);
+                }
+            }
+        }
+    }
+
+    @Override
     public Alquiler buscar(Integer id) {
         log.info("Buscando alquiler por ID: " + id);
         Alquiler alquiler = null;
