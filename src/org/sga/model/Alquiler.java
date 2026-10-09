@@ -1,5 +1,6 @@
 package org.sga.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -18,6 +19,12 @@ public class Alquiler {
     private String placa;
     private String descripcionVehiculo;
     private String nombreCliente;
+    // datos de la devolución (T3.23 a T3.28), los calcula y guarda la base de datos
+    private LocalDateTime fechaHoraDevolucion;
+    private String estadoDevolucion;
+    private BigDecimal precioDia;
+    private int diasAtraso;
+    private BigDecimal cobroAdicional;
 
     public Alquiler() {
     }
@@ -130,5 +137,45 @@ public class Alquiler {
 
     public void setNombreCliente(String nombreCliente) {
         this.nombreCliente = nombreCliente;
+    }
+
+    public LocalDateTime getFechaHoraDevolucion() {
+        return fechaHoraDevolucion;
+    }
+
+    public void setFechaHoraDevolucion(LocalDateTime fechaHoraDevolucion) {
+        this.fechaHoraDevolucion = fechaHoraDevolucion;
+    }
+
+    public String getEstadoDevolucion() {
+        return estadoDevolucion;
+    }
+
+    public void setEstadoDevolucion(String estadoDevolucion) {
+        this.estadoDevolucion = estadoDevolucion;
+    }
+
+    public BigDecimal getPrecioDia() {
+        return precioDia;
+    }
+
+    public void setPrecioDia(BigDecimal precioDia) {
+        this.precioDia = precioDia;
+    }
+
+    public int getDiasAtraso() {
+        return diasAtraso;
+    }
+
+    public void setDiasAtraso(int diasAtraso) {
+        this.diasAtraso = diasAtraso;
+    }
+
+    public BigDecimal getCobroAdicional() {
+        return cobroAdicional;
+    }
+
+    public void setCobroAdicional(BigDecimal cobroAdicional) {
+        this.cobroAdicional = cobroAdicional;
     }
 }
