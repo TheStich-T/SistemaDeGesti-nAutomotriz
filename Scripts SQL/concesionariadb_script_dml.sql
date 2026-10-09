@@ -39,6 +39,14 @@ INSERT INTO reportes_taller (id_vehiculo, id_mecanico, diagnostico, trabajo_real
 INSERT INTO ventas (id_vehiculo, cui_cliente, id_asesor, precio) VALUES
 (6, 2500100010101, 4, 152000.00);
 
+-- 5.1 tarifas_alquiler (precio por día según el tipo de vehículo, deben existir antes de insertar alquileres)
+INSERT INTO tarifas_alquiler (tipo, precio_dia) VALUES
+('sedan', 250.00),
+('hatchback', 200.00),
+('suv', 350.00),
+('pickup', 400.00),
+('otro', 300.00);
+
 -- 6. alquileres (inserts directos)
 INSERT INTO alquileres (id_vehiculo, cui_cliente, id_asesor, fecha_salida, fecha_regreso, lleva_seguro) VALUES
 (5, 2500100020101, 4, '2026-09-15', '2026-09-22', true),

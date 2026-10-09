@@ -61,6 +61,11 @@ create table ventas (
     fecha_venta timestamp default current_timestamp
 );
 
+create table tarifas_alquiler (
+    tipo enum('sedan', 'pickup', 'suv', 'hatchback', 'otro') primary key,
+    precio_dia decimal(10,2) not null
+);
+
 create table alquileres (
     id_alquiler int primary key auto_increment,
     id_vehiculo int,
@@ -69,6 +74,8 @@ create table alquileres (
     fecha_salida date not null,
     fecha_regreso date not null,
     lleva_seguro boolean default false,
+    precio_dia decimal(10,2) not null default 0,
+    total decimal(10,2) not null default 0,
     fecha_devolucion_real date null,
     fecha_registro timestamp default current_timestamp
 );
@@ -92,7 +99,42 @@ add constraint fk_al_vehiculo foreign key (id_vehiculo) references vehiculos(id_
 add constraint fk_al_cliente foreign key (cui_cliente) references clientes(cui) on delete restrict,
 add constraint fk_al_asesor foreign key (id_asesor) references usuarios(id_usuario) on delete restrict;
 
-use concesionariadb_in4cm;
+-- cálculo automático del precio del alquiler
+delimiter $$
+
+-- tarifa por día según el tipo del vehículo (0 si el vehículo no tiene tarifa)
+create function fn_tarifa_dia(_id_vehiculo int)
+returns decimal(10,2)
+reads sql data
+begin
+    declare _tarifa decimal(10,2);
+
+    select t.precio_dia into _tarifa
+    from vehiculos v
+    inner join tarifas_alquiler t on t.tipo = v.tipo
+    where v.id_vehiculo = _id_vehiculo;
+
+    return ifnull(_tarifa, 0);
+end $$
+
+-- al registrar un alquiler guarda la tarifa del día y calcula el total (mínimo 1 día)
+create trigger trg_alquileres_calcular_total
+before insert on alquileres
+for each row
+begin
+    set new.precio_dia = fn_tarifa_dia(new.id_vehiculo);
+    set new.total = new.precio_dia * greatest(datediff(new.fecha_regreso, new.fecha_salida), 1);
+end $$
+
+-- si se cambian las fechas del alquiler, el total se recalcula con la misma tarifa
+create trigger trg_alquileres_recalcular_total
+before update on alquileres
+for each row
+begin
+    set new.total = new.precio_dia * greatest(datediff(new.fecha_regreso, new.fecha_salida), 1);
+end $$
+
+delimiter ;
 
 -- 1. crud: usuarios
 delimiter $$
@@ -476,7 +518,8 @@ delimiter ;
 -- 7. procedimientos de negocio (cambian el estado del vehículo)
 delimiter $$
 
--- asesor: vender un vehículo disponible cambio opcional: solo se vende si operacion_permitida es 'venta' o 'ambas'
+-- asesor: vender un vehículo disponible
+-- cambio opcional: solo se vende si operacion_permitida es 'venta' o 'ambas'
 create procedure sp_vendervehiculo(
     in _id_vehiculo int,
     in _cui_cliente bigint,
@@ -492,7 +535,8 @@ begin
     update vehiculos set estado = 'vendido' where id_vehiculo = _id_vehiculo and estado = 'disponible' and operacion_permitida in ('venta', 'ambas');
 end $$
 
--- asesor: alquilar un vehículo disponible cambio opcional : solo se alquila si operacion_permitida es 'alquiler' o 'ambas'
+-- asesor: alquilar un vehículo disponible
+-- cambio opcional : solo se alquila si operacion_permitida es 'alquiler' o 'ambas'
 create procedure sp_alquilarvehiculo(
     in _id_vehiculo int,
     in _cui_cliente bigint,
