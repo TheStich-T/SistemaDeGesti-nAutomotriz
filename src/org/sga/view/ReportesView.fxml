@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="540.0" prefWidth="860.0" styleClass="mainFxmlClass"
+            xmlns="http://javafx.com/javafx/21.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.sga.controller.ReportesController">
+    <stylesheets>
+        <URL value="@/org/sga/view/style/reportesview.css" />
+    </stylesheets>
+    <children>
+        <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" onAction="#eventoVolver" prefHeight="25.0" prefWidth="89.0" text="Regresar" />
+        <Label layoutX="320.0" layoutY="15.0" styleClass="page-title" text="Reportes por Período">
+            <font>
+                <Font size="22.0" />
+            </font>
+        </Label>
+
+        <Label layoutX="30.0" layoutY="78.0" styleClass="field-label" text="Período:" />
+        <ComboBox fx:id="cmbPeriodo" layoutX="88.0" layoutY="73.0" prefHeight="28.0" prefWidth="190.0" />
+        <Label layoutX="305.0" layoutY="78.0" styleClass="field-label" text="Fecha de referencia:" />
+        <DatePicker fx:id="dtpReferencia" layoutX="430.0" layoutY="73.0" prefHeight="28.0" prefWidth="150.0" />
+        <Button layoutX="610.0" layoutY="72.0" mnemonicParsing="false" onAction="#eventoGenerar" prefHeight="30.0" prefWidth="140.0" styleClass="primary-button" text="GENERAR" />
+
+        <Label fx:id="lblRango" layoutX="30.0" layoutY="115.0" styleClass="range-label" text="" />
+
+        <TabPane layoutX="30.0" layoutY="142.0" prefHeight="330.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Ventas">
+                    <content>
+                        <TableView fx:id="tblVentas">
+                            <columns>
+                                <TableColumn fx:id="colVentaNumero" prefWidth="60.0" text="No." />
+                                <TableColumn fx:id="colVentaPlaca" prefWidth="80.0" text="Placa" />
+                                <TableColumn fx:id="colVentaVehiculo" prefWidth="170.0" text="Vehículo" />
+                                <TableColumn fx:id="colVentaCliente" prefWidth="160.0" text="Cliente" />
+                                <TableColumn fx:id="colVentaAsesor" prefWidth="100.0" text="Asesor" />
+                                <TableColumn fx:id="colVentaFecha" prefWidth="100.0" text="Fecha" />
+                                <TableColumn fx:id="colVentaMonto" prefWidth="110.0" text="Monto" />
+                            </columns>
+                        </TableView>
+                    </content>
+                </Tab>
+                <Tab text="Alquileres">
+                    <content>
+                        <TableView fx:id="tblAlquileres">
+                            <columns>
+                                <TableColumn fx:id="colAlqNumero" prefWidth="45.0" text="No." />
+                                <TableColumn fx:id="colAlqPlaca" prefWidth="70.0" text="Placa" />
+                                <TableColumn fx:id="colAlqVehiculo" prefWidth="130.0" text="Vehículo" />
+                                <TableColumn fx:id="colAlqCliente" prefWidth="125.0" text="Cliente" />
+                                <TableColumn fx:id="colAlqAsesor" prefWidth="80.0" text="Asesor" />
+                                <TableColumn fx:id="colAlqSalida" prefWidth="80.0" text="Salida" />
+                                <TableColumn fx:id="colAlqRegreso" prefWidth="80.0" text="Regreso" />
+                                <TableColumn fx:id="colAlqTotal" prefWidth="90.0" text="Total" />
+                                <TableColumn fx:id="colAlqEstado" prefWidth="95.0" text="Estado" />
+                            </columns>
+                        </TableView>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+
+        <Label fx:id="lblResumen" layoutX="30.0" layoutY="490.0" styleClass="summary-label" text="" />
+    </children>
+</AnchorPane>

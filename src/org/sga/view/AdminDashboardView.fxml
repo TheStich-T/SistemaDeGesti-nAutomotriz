@@ -98,20 +98,71 @@
                     </VBox.margin>
                 </Label>
  
-                <HBox spacing="50.0">
+                <GridPane hgap="14.0" vgap="14.0">
                     <VBox.margin>
-                        <Insets bottom="24.0" />
+                        <Insets bottom="22.0" />
                     </VBox.margin>
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="140.0" prefWidth="160.0" />
+                        <ColumnConstraints minWidth="140.0" prefWidth="160.0" />
+                        <ColumnConstraints minWidth="140.0" prefWidth="160.0" />
+                        <ColumnConstraints minWidth="140.0" prefWidth="160.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="60.0" prefHeight="68.0" />
+                        <RowConstraints minHeight="60.0" prefHeight="68.0" />
+                    </rowConstraints>
                     <children>
-                        <VBox spacing="2.0" />
-                        <VBox spacing="2.0">
+                        <VBox spacing="2.0" styleClass="kpi-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <children>
-                                <Label fx:id="lblVentasHoy" styleClass="indicator-value" />
+                                <Label styleClass="kpi-label" text="VENTAS HOY" />
+                                <Label fx:id="lblVentasHoy" styleClass="kpi-value" text="-" />
                             </children>
                         </VBox>
-                        <VBox spacing="2.0" />
+                        <VBox spacing="2.0" styleClass="kpi-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <children>
+                                <Label styleClass="kpi-label" text="VENDIDO EN EL MES" />
+                                <Label fx:id="lblMontoVentasMes" styleClass="kpi-value" text="-" />
+                            </children>
+                        </VBox>
+                        <VBox spacing="2.0" styleClass="kpi-card" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                            <children>
+                                <Label styleClass="kpi-label" text="ALQUILERES ACTIVOS" />
+                                <Label fx:id="lblAlquileresActivos" styleClass="kpi-value" text="-" />
+                            </children>
+                        </VBox>
+                        <VBox spacing="2.0" styleClass="kpi-card, kpi-card-alert" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                            <children>
+                                <Label styleClass="kpi-label" text="ALQUILERES ATRASADOS" />
+                                <Label fx:id="lblAlquileresAtrasados" styleClass="kpi-value" text="-" />
+                            </children>
+                        </VBox>
+                        <VBox spacing="2.0" styleClass="kpi-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <children>
+                                <Label styleClass="kpi-label" text="VEHÍCULOS DISPONIBLES" />
+                                <Label fx:id="lblVehiculosDisponibles" styleClass="kpi-value" text="-" />
+                            </children>
+                        </VBox>
+                        <VBox spacing="2.0" styleClass="kpi-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <children>
+                                <Label styleClass="kpi-label" text="VEHÍCULOS EN TALLER" />
+                                <Label fx:id="lblVehiculosTaller" styleClass="kpi-value" text="-" />
+                            </children>
+                        </VBox>
+                        <VBox spacing="2.0" styleClass="kpi-card" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                            <children>
+                                <Label styleClass="kpi-label" text="VEHÍCULOS VENDIDOS" />
+                                <Label fx:id="lblVehiculosVendidos" styleClass="kpi-value" text="-" />
+                            </children>
+                        </VBox>
+                        <VBox spacing="2.0" styleClass="kpi-card" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                            <children>
+                                <Label styleClass="kpi-label" text="USUARIOS ACTIVOS" />
+                                <Label fx:id="lblUsuariosActivos" styleClass="kpi-value" text="-" />
+                            </children>
+                        </VBox>
                     </children>
-                </HBox>
+                </GridPane>
  
                 <GridPane hgap="16.0" vgap="16.0">
                     <columnConstraints>
@@ -125,8 +176,8 @@
                     </rowConstraints>
                     <children>
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoGestionUsuarios" styleClass="dashboard-card" text="Gestión de usuarios" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Reportes por período" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Indicadores generales" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoReportes" styleClass="dashboard-card, dashboard-card-alt" text="Reportes por período" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoActualizarIndicadores" styleClass="dashboard-card" text="Actualizar indicadores" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Inventario de vehículos" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Historial de ventas" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Historial de alquileres" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
