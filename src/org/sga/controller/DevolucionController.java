@@ -74,7 +74,6 @@ public class DevolucionController implements Initializable {
         cargarAlquileres();
     }
 
-    // T3.23: alquileres activos (los que todavía no se han devuelto)
     private void cargarAlquileres() {
         Usuario actual = SessionContext.getInstancia().getUsuarioActual();
 
@@ -103,7 +102,6 @@ public class DevolucionController implements Initializable {
                 + alquiler.getNombreCliente() + "  |  Devolución programada: "
                 + (alquiler.getFechaRegreso() != null ? alquiler.getFechaRegreso().format(FORMATO_FECHA) : "");
         if (alquiler.getDiasAtraso() > 0) {
-            // T3.28: cobro adicional = días de atraso x tarifa por día del alquiler
             detalle += "\nATRASADO: " + alquiler.getDiasAtraso() + " día(s) x "
                     + formatearMonto(alquiler.getPrecioDia()) + " = cobro adicional de "
                     + formatearMonto(alquiler.getCobroAdicional());
