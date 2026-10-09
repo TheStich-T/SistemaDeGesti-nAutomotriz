@@ -70,7 +70,6 @@ public class HistorialVentasController implements Initializable {
         cargarVentas();
     }
 
-        // el asesor ve solo sus ventas; el admin ve las de todos
     private void cargarVentas() {
         Usuario actual = SessionContext.getInstancia().getUsuarioActual();
 

@@ -121,9 +121,13 @@ public class AdminDashboardController implements Initializable {
         irA("/org/sga/view/VentaView.fxml");
     }
 
-    @FXML
+      @FXML
     public void eventoHistorialVentas(ActionEvent evento) {
-        irA("/org/sga/view/HistorialVentasView.fxml");
+        try {
+            Main.cambiarEscena("/org/sga/view/HistorialVentasView.fxml");
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
+        }
     }
 
     @FXML
