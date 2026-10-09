@@ -243,4 +243,21 @@ public class VentaController implements Initializable {
     private void mostrarAlerta(Alert.AlertType tipo, String mensaje) {
         new Alert(tipo, mensaje, ButtonType.OK).show();
     }
+    
+    @FXML
+public void eventoBuscarCliente(ActionEvent evento) {
+    String cui = txtCui.getText() == null ? "" : txtCui.getText().trim();
+    if (!cui.matches("\\d{13}")) {
+        mostrarAlerta(Alert.AlertType.WARNING, "El CUI debe tener exactamente 13 dígitos numéricos.");
+        return;
+    }
+    Cliente cliente = clienteDAO.buscar(Long.parseLong(cui));
+    if (cliente == null) {
+        return; 
+    }
+    txtNombres.setText(cliente.getNombres());
+    txtApellidos.setText(cliente.getApellidos());
+    txtTelefono.setText(cliente.getTelefono());
+    txtLicencia.setText(cliente.getLicencia());
+}
 }
