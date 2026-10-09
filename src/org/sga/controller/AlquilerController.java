@@ -3,6 +3,7 @@ package org.sga.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -36,13 +37,11 @@ import org.sga.system.Main;
 
 public class AlquilerController implements Initializable {
 
-    private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @FXML private ComboBox<Vehiculo> cmbVehiculo;
     @FXML private Label lblDetalleVehiculo;
     @FXML private TextField txtCui;
-    @FXML private Label lblEstadoCliente;
     @FXML private TextField txtNombres;
     @FXML private TextField txtApellidos;
     @FXML private TextField txtTelefono;
@@ -56,16 +55,12 @@ public class AlquilerController implements Initializable {
     private AlquilerDAO alquilerDAO;
     private ClienteDAO clienteDAO;
 
-    // cliente encontrado por CUI (null si es un cliente nuevo)
-    private Cliente clienteExistente;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         vehiculoDAO = new VehiculoDAOImpl();
         alquilerDAO = new AlquilerDAOImpl();
         clienteDAO = new ClienteDAOImpl();
         lblMensaje.setText("");
-        lblEstadoCliente.setText("");
 
         cmbVehiculo.setConverter(new StringConverter<>() {
             @Override
@@ -102,9 +97,6 @@ public class AlquilerController implements Initializable {
             }
         });
 
-        // si cambian el CUI, los datos del cliente anterior ya no aplican
-        txtCui.textProperty().addListener((obs, anterior, nuevo) -> limpiarDatosCliente());
-
         Usuario actual = SessionContext.getInstancia().getUsuarioActual();
         lblAsesor.setText(actual != null ? actual.getUsername() : "");
 
@@ -117,29 +109,10 @@ public class AlquilerController implements Initializable {
     }
 
     @FXML
-    public void eventoBuscarCliente(ActionEvent evento) {
-        try {
-            long cui = validarCui();
-            Cliente cliente = clienteDAO.buscar(cui);
-            if (cliente != null) {
-                mostrarClienteExistente(cliente);
-            } else {
-                limpiarDatosCliente();
-                lblEstadoCliente.setText("Cliente nuevo: completa sus datos");
-            }
-            lblMensaje.setText("");
-        } catch (ValidarException e) {
-            mostrarAlerta(Alert.AlertType.WARNING, e.getMessage());
-            lblMensaje.setText(e.getMessage());
-        }
-    }
-
-    @FXML
     public void eventoRegistrar(ActionEvent evento) {
         try {
             ValidarException.validarNulo(cmbVehiculo.getValue(), "Selecciona el vehículo que se va a alquilar.");
-            long cui = validarCui();
-            Cliente cliente = obtenerClienteParaAlquiler(cui);
+            Cliente cliente = validarCliente();
             LocalDate fechaRegreso = validarFechaRegreso();
 
             // el alquiler queda asociado al asesor que tiene la sesión activa
@@ -147,6 +120,7 @@ public class AlquilerController implements Initializable {
             ValidarException.validarNulo(actual, "No hay una sesión activa. Inicia sesión nuevamente.");
 
             Vehiculo vehiculo = cmbVehiculo.getValue();
+            boolean llevaSeguro = chkSeguro.isSelected();
 
             Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION,
                     "¿Registrar el alquiler del vehículo " + vehiculo.getPlaca() + " a "
@@ -160,9 +134,10 @@ public class AlquilerController implements Initializable {
                 return;
             }
 
-            // si el cliente es nuevo, se registra antes del alquiler (la tabla alquileres lo requiere)
-            if (clienteExistente == null && !clienteDAO.insertar(cliente)) {
-                mostrarAlerta(Alert.AlertType.ERROR, "No se pudo registrar al cliente. Intenta nuevamente.");
+            // primero se guarda el cliente (si el CUI ya existe, se actualizan sus datos)
+            if (!clienteDAO.guardar(cliente)) {
+                mostrarAlerta(Alert.AlertType.ERROR, "No se pudieron guardar los datos del cliente. "
+                        + "Intenta nuevamente.");
                 return;
             }
 
@@ -171,20 +146,26 @@ public class AlquilerController implements Initializable {
             alquiler.setCuiCliente(cliente.getCui());
             alquiler.setIdAsesor(actual.getId());
             alquiler.setFechaRegreso(fechaRegreso);
-            alquiler.setLlevaSeguro(chkSeguro.isSelected());
+            alquiler.setLlevaSeguro(llevaSeguro);
 
             if (alquilerDAO.registrarAlquiler(alquiler)) {
                 // las fechas las guardó la base de datos: aquí solo se consultan y se muestran
                 Alquiler guardado = alquilerDAO.buscar(alquiler.getId());
-                String detalle = "";
-                if (guardado != null && guardado.getFechaRegistro() != null) {
-                    detalle = " Registrado el " + guardado.getFechaRegistro().format(FORMATO_FECHA_HORA)
-                            + ", devolución programada: " + guardado.getFechaRegreso().format(FORMATO_FECHA) + ".";
-                }
-                mostrarAlerta(Alert.AlertType.INFORMATION, "Alquiler del vehículo " + vehiculo.getPlaca()
-                        + " registrado con éxito. El vehículo quedó como Alquilado." + detalle);
+                LocalDateTime fechaRegistro = guardado != null ? guardado.getFechaRegistro() : null;
+                LocalDate fechaSalida = guardado != null ? guardado.getFechaSalida() : null;
+                String descripcion = vehiculo.getMarca() + " " + vehiculo.getModelo() + " " + vehiculo.getAnio();
+
                 limpiarCampos();
                 cargarVehiculos();
+
+                try {
+                    TicketController.mostrar(alquiler.getId(), fechaRegistro, cliente.getNombreCompleto(),
+                            cliente.getCui(), vehiculo.getPlaca(), descripcion, fechaSalida, fechaRegreso,
+                            llevaSeguro, actual.getUsername());
+                } catch (IOException e) {
+                    mostrarAlerta(Alert.AlertType.WARNING, "El alquiler se registró, pero no se pudo abrir "
+                            + "el ticket: " + e.getMessage());
+                }
             } else {
                 mostrarAlerta(Alert.AlertType.ERROR, "No se pudo registrar el alquiler. "
                         + "Verifica que el vehículo siga Disponible.");
@@ -213,33 +194,23 @@ public class AlquilerController implements Initializable {
         }
     }
 
-    private long validarCui() throws ValidarException {
+    // arma el cliente con los datos del formulario
+    private Cliente validarCliente() throws ValidarException {
         ValidarException.validarNoVacio(txtCui.getText(), "CUI / DPI del cliente");
-        String texto = txtCui.getText().trim();
-        if (!texto.matches("\\d{13}")) {
-            throw new ValidarException("El CUI debe tener exactamente 13 dígitos numéricos.");
-        }
-        return Long.parseLong(texto);
-    }
-
-    // T3.17: usa el cliente registrado o arma uno nuevo con DPI, nombre, apellido, teléfono y licencia
-    private Cliente obtenerClienteParaAlquiler(long cui) throws ValidarException {
-        Cliente existente = (clienteExistente != null) ? clienteExistente : clienteDAO.buscar(cui);
-        if (existente != null) {
-            mostrarClienteExistente(existente);
-            return existente;
-        }
-
         ValidarException.validarNoVacio(txtNombres.getText(), "nombres");
         ValidarException.validarNoVacio(txtApellidos.getText(), "apellidos");
         ValidarException.validarNoVacio(txtTelefono.getText(), "teléfono");
         ValidarException.validarNoVacio(txtLicencia.getText(), "licencia de conducir");
 
+        String cui = txtCui.getText().trim();
         String nombres = txtNombres.getText().trim();
         String apellidos = txtApellidos.getText().trim();
         String telefono = txtTelefono.getText().trim();
         String licencia = txtLicencia.getText().trim();
 
+        if (!cui.matches("\\d{13}")) {
+            throw new ValidarException("El CUI debe tener exactamente 13 dígitos numéricos.");
+        }
         if (!nombres.matches("[\\p{L} .'-]{1,100}")) {
             throw new ValidarException("Los nombres solo pueden contener letras (máximo 100 caracteres).");
         }
@@ -253,7 +224,7 @@ public class AlquilerController implements Initializable {
             throw new ValidarException("La licencia admite máximo 30 caracteres.");
         }
 
-        return new Cliente(cui, nombres, apellidos, telefono, null, licencia);
+        return new Cliente(Long.parseLong(cui), nombres, apellidos, telefono, null, licencia);
     }
 
     private LocalDate validarFechaRegreso() throws ValidarException {
@@ -265,37 +236,14 @@ public class AlquilerController implements Initializable {
         return fecha;
     }
 
-    private void mostrarClienteExistente(Cliente cliente) {
-        clienteExistente = cliente;
-        txtNombres.setText(cliente.getNombres());
-        txtApellidos.setText(cliente.getApellidos());
-        txtTelefono.setText(cliente.getTelefono());
-        txtLicencia.setText(cliente.getLicencia());
-        establecerClienteEditable(false);
-        lblEstadoCliente.setText("Cliente ya registrado");
-    }
-
-    private void limpiarDatosCliente() {
-        clienteExistente = null;
+    private void limpiarCampos() {
+        cmbVehiculo.setValue(null);
+        lblDetalleVehiculo.setText("");
+        txtCui.clear();
         txtNombres.clear();
         txtApellidos.clear();
         txtTelefono.clear();
         txtLicencia.clear();
-        establecerClienteEditable(true);
-        lblEstadoCliente.setText("");
-    }
-
-    private void establecerClienteEditable(boolean editable) {
-        txtNombres.setEditable(editable);
-        txtApellidos.setEditable(editable);
-        txtTelefono.setEditable(editable);
-        txtLicencia.setEditable(editable);
-    }
-
-    private void limpiarCampos() {
-        cmbVehiculo.setValue(null);
-        lblDetalleVehiculo.setText("");
-        txtCui.clear(); // el listener limpia los demás datos del cliente
         dpFechaRegreso.setValue(null);
         chkSeguro.setSelected(false);
         lblMensaje.setText("");

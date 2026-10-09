@@ -476,8 +476,7 @@ delimiter ;
 -- 7. procedimientos de negocio (cambian el estado del vehículo)
 delimiter $$
 
--- asesor: vender un vehículo disponible
--- cambio opcional: solo se vende si operacion_permitida es 'venta' o 'ambas'
+-- asesor: vender un vehículo disponible cambio opcional: solo se vende si operacion_permitida es 'venta' o 'ambas'
 create procedure sp_vendervehiculo(
     in _id_vehiculo int,
     in _cui_cliente bigint,
@@ -493,8 +492,7 @@ begin
     update vehiculos set estado = 'vendido' where id_vehiculo = _id_vehiculo and estado = 'disponible' and operacion_permitida in ('venta', 'ambas');
 end $$
 
--- asesor: alquilar un vehículo disponible
--- cambio opcional : solo se alquila si operacion_permitida es 'alquiler' o 'ambas'
+-- asesor: alquilar un vehículo disponible cambio opcional : solo se alquila si operacion_permitida es 'alquiler' o 'ambas'
 create procedure sp_alquilarvehiculo(
     in _id_vehiculo int,
     in _cui_cliente bigint,

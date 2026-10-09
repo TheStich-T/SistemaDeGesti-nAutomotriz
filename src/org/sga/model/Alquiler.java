@@ -14,6 +14,10 @@ public class Alquiler {
     private boolean llevaSeguro;
     private LocalDate fechaDevolucionReal;
     private LocalDateTime fechaRegistro;
+    // datos de apoyo para mostrar "Mis alquileres" (vienen de los JOIN)
+    private String placa;
+    private String descripcionVehiculo;
+    private String nombreCliente;
 
     public Alquiler() {
     }
@@ -102,5 +106,29 @@ public class Alquiler {
 
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public String getDescripcionVehiculo() {
+        return descripcionVehiculo;
+    }
+
+    public void setDescripcionVehiculo(String descripcionVehiculo) {
+        this.descripcionVehiculo = descripcionVehiculo;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
     }
 }

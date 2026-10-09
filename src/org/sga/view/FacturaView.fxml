@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane prefHeight="430.0" prefWidth="440.0" styleClass="mainFxmlClass"
+            xmlns="http://javafx.com/javafx/21.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.sga.controller.FacturaController">
+    <stylesheets>
+        <URL value="@style/facturaview.css" />
+    </stylesheets>
+    <children>
+        <Label alignment="CENTER" layoutX="0.0" layoutY="22.0" prefWidth="440.0" styleClass="company-title" text="IMPULSO AUTOMOTRIZ" />
+        <Label alignment="CENTER" layoutX="0.0" layoutY="58.0" prefWidth="440.0" styleClass="doc-title" text="FACTURA DE VENTA" />
+        <GridPane hgap="14.0" layoutX="40.0" layoutY="100.0">
+            <columnConstraints>
+                <ColumnConstraints minWidth="10.0" prefWidth="130.0" />
+                <ColumnConstraints minWidth="10.0" prefWidth="230.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="36.0" />
+            </rowConstraints>
+            <children>
+                <Label styleClass="field-name" text="No. de factura:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <Label fx:id="lblNumero" styleClass="field-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <Label styleClass="field-name" text="Fecha y hora:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <Label fx:id="lblFecha" styleClass="field-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label styleClass="field-name" text="Cliente:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <Label fx:id="lblCliente" maxWidth="230.0" styleClass="field-value" text="" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label styleClass="field-name" text="CUI:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                <Label fx:id="lblCui" styleClass="field-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Label styleClass="field-name" text="Vehículo:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                <Label fx:id="lblVehiculo" maxWidth="230.0" styleClass="field-value" text="" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <Label styleClass="field-name" text="Placa:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                <Label fx:id="lblPlaca" styleClass="field-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <Label styleClass="field-name" text="Atendido por:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                <Label fx:id="lblAsesor" styleClass="field-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                <Label styleClass="field-name" text="TOTAL:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                <Label fx:id="lblTotal" styleClass="total-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            </children>
+        </GridPane>
+        <Button layoutX="160.0" layoutY="365.0" mnemonicParsing="false" onAction="#eventoCerrar" prefHeight="30.0" prefWidth="120.0" styleClass="primary-button" text="CERRAR" />
+    </children>
+</AnchorPane>

@@ -6,9 +6,7 @@ drop procedure if exists sp_listarventasporasesor;
 
 delimiter $$
 
--- T3.1 + T3.2: busca por marca, modelo o placa, solo vehículos 'disponible'
--- _operacion: 'venta' o 'alquiler' (NULL o '' = sin filtrar). 'ambas' siempre cumple.
--- devuelve las mismas 16 columnas que sp_listarvehiculos para reutilizar mapearVehiculo()
+-- busca por marca, modelo o placa, solo vehículos 'disponible' _operacion: 'venta' o 'alquiler' (NULL o '' = sin filtrar). 'ambas' siempre cumple. devuelve las mismas 16 columnas que sp_listarvehiculos para reutilizar mapearVehiculo()
 create procedure sp_buscarvehiculosdisponibles(
     in _criterio varchar(50),
     in _operacion varchar(10)
@@ -25,8 +23,7 @@ begin
     order by marca, modelo;
 end $$
 
--- T3.9: la venta NO borra el vehículo, solo cambia su estado a 'vendido'
--- solo afecta una fila si está disponible y permite venta (si no, el DAO devuelve false)
+-- la venta NO borra el vehículo, solo cambia su estado a 'vendido' solo afecta una fila si está disponible y permite venta (si no, el DAO devuelve false)
 create procedure sp_marcarvehiculovendido(
     in _id_vehiculo int
 )
@@ -38,7 +35,7 @@ begin
       and operacion_permitida in ('venta', 'ambas');
 end $$
 
--- T3.12: ventas de un asesor (historial) con datos del vehículo y del cliente
+-- ventas de un asesor (historial) con datos del vehículo y del cliente
 create procedure sp_listarventasporasesor(
     in _id_asesor int
 )

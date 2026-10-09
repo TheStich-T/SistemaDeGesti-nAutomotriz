@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +58,20 @@ public class VentaDAOImpl implements VentaDAO {
                     log.warning("El vehículo " + venta.getIdVehiculo() + " no está disponible para la venta");
                     return false;
                 }
-                
+
                 insertarVenta.setInt(1, venta.getIdVehiculo());
                 insertarVenta.setLong(2, venta.getCuiCliente());
                 insertarVenta.setInt(3, venta.getIdAsesor());
                 insertarVenta.setBigDecimal(4, venta.getPrecio());
                 insertarVenta.executeUpdate();
+
+                // id generado, para mostrar el número de factura
+                try (Statement consultaId = conexion.createStatement();
+                     ResultSet resultadoId = consultaId.executeQuery("select last_insert_id()")) {
+                    if (resultadoId.next()) {
+                        venta.setId(resultadoId.getInt(1));
+                    }
+                }
 
                 conexion.commit();
                 log.info("Venta registrada y vehículo marcado como Vendido: " + venta.getIdVehiculo());

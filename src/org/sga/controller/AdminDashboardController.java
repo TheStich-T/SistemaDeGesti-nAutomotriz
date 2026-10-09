@@ -17,11 +17,15 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     private Label lblBienvenida;
+    @FXML
+    private Label lblUsuarioSidebar;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Usuario actual = SessionContext.getInstancia().getUsuarioActual();
-        lblBienvenida.setText("Bienvenido, " + (actual != null ? actual.getUsername() : "administrador"));
+        String nombreUsuario = actual != null ? actual.getUsername() : "administrador";
+        lblBienvenida.setText("Bienvenido, " + nombreUsuario);
+        lblUsuarioSidebar.setText(nombreUsuario);
     }
 
     @FXML

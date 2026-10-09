@@ -17,11 +17,15 @@ public class ProvisionadorDashboardController implements Initializable {
 
     @FXML
     private Label lblBienvenida;
+    @FXML
+    private Label lblUsuarioSidebar;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Usuario actual = SessionContext.getInstancia().getUsuarioActual();
-        lblBienvenida.setText("Bienvenido, " + (actual != null ? actual.getUsername() : "provisionador"));
+        String nombreUsuario = actual != null ? actual.getUsername() : "provisionador";
+        lblBienvenida.setText("Bienvenido, " + nombreUsuario);
+        lblUsuarioSidebar.setText(nombreUsuario);
     }
 
     @FXML
@@ -29,7 +33,7 @@ public class ProvisionadorDashboardController implements Initializable {
         new Alert(Alert.AlertType.INFORMATION, "Esta función se implementa en un próximo sprint.", ButtonType.OK).show();
     }
 
-        @FXML
+    @FXML
     public void eventoRegistrarVehiculo(ActionEvent evento) {
         try {
             Main.cambiarEscena("/org/sga/view/VehiculoAltaView.fxml");
@@ -37,7 +41,7 @@ public class ProvisionadorDashboardController implements Initializable {
             new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
         }
     }
-    
+
     @FXML
     public void eventoCerrarSesion(ActionEvent evento) {
         try {

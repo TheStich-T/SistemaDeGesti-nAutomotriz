@@ -1,7 +1,6 @@
 use concesionariadb_in4cm;
 
--- la tabla usuarios ya se creó en el DDL, porque vehiculos, reportes_taller,
--- ventas y alquileres dependen de ella por llave foránea
+-- la tabla usuarios ya se creó en el DDL, porque vehiculos, reportes_taller, ventas y alquileres dependen de ella por llave foránea
 
 drop procedure if exists sp_iniciar_sesion;
 drop procedure if exists sp_buscarusuarioporusername;

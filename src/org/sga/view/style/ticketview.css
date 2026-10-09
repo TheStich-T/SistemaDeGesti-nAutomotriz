@@ -1,0 +1,39 @@
+.mainFxmlClass {
+    -fx-background-color: #ffffff;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.company-title {
+    -fx-text-fill: #33506f;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.doc-title {
+    -fx-text-fill: #202632;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.field-name {
+    -fx-text-fill: #4a505c;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.field-value {
+    -fx-text-fill: #202632;
+    -fx-font-size: 12px;
+}
+
+.primary-button {
+    -fx-background-color: #33506f;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #3d5d80;
+}

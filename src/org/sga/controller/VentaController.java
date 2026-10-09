@@ -3,6 +3,7 @@ package org.sga.controller;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -37,7 +38,10 @@ public class VentaController implements Initializable {
     @FXML private ComboBox<Vehiculo> cmbVehiculo;
     @FXML private Label lblDetalleVehiculo;
     @FXML private TextField txtCui;
-    @FXML private Label lblCliente;
+    @FXML private TextField txtNombres;
+    @FXML private TextField txtApellidos;
+    @FXML private TextField txtTelefono;
+    @FXML private TextField txtLicencia;
     @FXML private TextField txtPrecio;
     @FXML private Label lblAsesor;
     @FXML private Label lblMensaje;
@@ -69,7 +73,6 @@ public class VentaController implements Initializable {
             }
         });
 
-       
         cmbVehiculo.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionado) -> {
             if (seleccionado != null) {
                 txtPrecio.setText(seleccionado.getCosto().toPlainString());
@@ -85,34 +88,20 @@ public class VentaController implements Initializable {
         cargarVehiculos();
     }
 
-  
     private void cargarVehiculos() {
         cmbVehiculo.setItems(FXCollections.observableArrayList(
                 vehiculoDAO.buscarDisponibles("", "venta")));
     }
 
     @FXML
-    public void eventoBuscarCliente(ActionEvent evento) {
-        try {
-            Cliente cliente = obtenerCliente();
-            lblCliente.setText(cliente.getNombreCompleto());
-            lblMensaje.setText("");
-        } catch (ValidarException e) {
-            lblCliente.setText("");
-            mostrarAlerta(Alert.AlertType.WARNING, e.getMessage());
-            lblMensaje.setText(e.getMessage());
-        }
-    }
-
-    @FXML
     public void eventoRegistrar(ActionEvent evento) {
         try {
             ValidarException.validarNulo(cmbVehiculo.getValue(), "Selecciona el vehículo que se va a vender.");
-            Cliente cliente = obtenerCliente();
+            Cliente cliente = validarCliente();
             ValidarException.validarNoVacio(txtPrecio.getText(), "precio de venta");
             BigDecimal precio = validarPrecio(txtPrecio.getText().trim());
 
-            // T3.8: la venta queda asociada al asesor que tiene la sesión activa
+            // la venta queda asociada al asesor que tiene la sesión activa
             Usuario actual = SessionContext.getInstancia().getUsuarioActual();
             ValidarException.validarNulo(actual, "No hay una sesión activa. Inicia sesión nuevamente.");
 
@@ -129,18 +118,35 @@ public class VentaController implements Initializable {
                 return;
             }
 
+            // primero se guarda el cliente (si el CUI ya existe, se actualizan sus datos)
+            if (!clienteDAO.guardar(cliente)) {
+                mostrarAlerta(Alert.AlertType.ERROR, "No se pudieron guardar los datos del cliente. "
+                        + "Intenta nuevamente.");
+                return;
+            }
+
             Venta venta = new Venta();
             venta.setIdVehiculo(vehiculo.getId());
             venta.setCuiCliente(cliente.getCui());
             venta.setIdAsesor(actual.getId());
             venta.setPrecio(precio);
 
-           
             if (ventaDAO.registrarVenta(venta)) {
-                mostrarAlerta(Alert.AlertType.INFORMATION, "Venta del vehículo " + vehiculo.getPlaca()
-                        + " registrada con éxito. El vehículo quedó como Vendido.");
+                // la fecha la guardó la base de datos: aquí solo se consulta y se muestra
+                Venta guardada = ventaDAO.buscar(venta.getId());
+                LocalDateTime fecha = guardada != null ? guardada.getFechaVenta() : null;
+                String descripcion = vehiculo.getMarca() + " " + vehiculo.getModelo() + " " + vehiculo.getAnio();
+
                 limpiarCampos();
                 cargarVehiculos();
+
+                try {
+                    FacturaController.mostrar(venta.getId(), fecha, cliente.getNombreCompleto(),
+                            cliente.getCui(), vehiculo.getPlaca(), descripcion, precio, actual.getUsername());
+                } catch (IOException e) {
+                    mostrarAlerta(Alert.AlertType.WARNING, "La venta se registró, pero no se pudo abrir "
+                            + "la factura: " + e.getMessage());
+                }
             } else {
                 mostrarAlerta(Alert.AlertType.ERROR, "No se pudo registrar la venta. "
                         + "Verifica que el vehículo siga Disponible.");
@@ -169,15 +175,37 @@ public class VentaController implements Initializable {
         }
     }
 
-    private Cliente obtenerCliente() throws ValidarException {
+    // arma el cliente con los datos del formulario
+    private Cliente validarCliente() throws ValidarException {
         ValidarException.validarNoVacio(txtCui.getText(), "CUI del cliente");
-        String texto = txtCui.getText().trim();
-        if (!texto.matches("\\d{13}")) {
+        ValidarException.validarNoVacio(txtNombres.getText(), "nombres");
+        ValidarException.validarNoVacio(txtApellidos.getText(), "apellidos");
+        ValidarException.validarNoVacio(txtTelefono.getText(), "teléfono");
+        ValidarException.validarNoVacio(txtLicencia.getText(), "licencia de conducir");
+
+        String cui = txtCui.getText().trim();
+        String nombres = txtNombres.getText().trim();
+        String apellidos = txtApellidos.getText().trim();
+        String telefono = txtTelefono.getText().trim();
+        String licencia = txtLicencia.getText().trim();
+
+        if (!cui.matches("\\d{13}")) {
             throw new ValidarException("El CUI debe tener exactamente 13 dígitos numéricos.");
         }
-        Cliente cliente = clienteDAO.buscar(Long.parseLong(texto));
-        ValidarException.validarNulo(cliente, "No existe un cliente registrado con el CUI " + texto + ".");
-        return cliente;
+        if (!nombres.matches("[\\p{L} .'-]{1,100}")) {
+            throw new ValidarException("Los nombres solo pueden contener letras (máximo 100 caracteres).");
+        }
+        if (!apellidos.matches("[\\p{L} .'-]{1,100}")) {
+            throw new ValidarException("Los apellidos solo pueden contener letras (máximo 100 caracteres).");
+        }
+        if (!telefono.matches("\\d{8,15}")) {
+            throw new ValidarException("El teléfono debe tener entre 8 y 15 dígitos numéricos.");
+        }
+        if (licencia.length() > 30) {
+            throw new ValidarException("La licencia admite máximo 30 caracteres.");
+        }
+
+        return new Cliente(Long.parseLong(cui), nombres, apellidos, telefono, null, licencia);
     }
 
     private BigDecimal validarPrecio(String texto) throws ValidarException {
@@ -203,7 +231,10 @@ public class VentaController implements Initializable {
         cmbVehiculo.setValue(null);
         lblDetalleVehiculo.setText("");
         txtCui.clear();
-        lblCliente.setText("");
+        txtNombres.clear();
+        txtApellidos.clear();
+        txtTelefono.clear();
+        txtLicencia.clear();
         txtPrecio.clear();
         lblMensaje.setText("");
     }

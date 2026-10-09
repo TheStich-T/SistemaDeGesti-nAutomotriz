@@ -60,7 +60,7 @@ public class HistorialVentasController implements Initializable {
         cargarVentas();
     }
 
-    // T3.12 / T3.13: solo las ventas del asesor que tiene la sesión activa
+    // solo las ventas del asesor que tiene la sesión activa
     private void cargarVentas() {
         Usuario actual = SessionContext.getInstancia().getUsuarioActual();
 
@@ -82,6 +82,23 @@ public class HistorialVentasController implements Initializable {
     @FXML
     public void eventoActualizar(ActionEvent evento) {
         cargarVentas();
+    }
+
+    @FXML
+    public void eventoMostrarFactura(ActionEvent evento) {
+        Venta venta = tblVentas.getSelectionModel().getSelectedItem();
+        if (venta == null) {
+            new Alert(Alert.AlertType.WARNING, "Selecciona una venta de la tabla.", ButtonType.OK).show();
+            return;
+        }
+        Usuario actual = SessionContext.getInstancia().getUsuarioActual();
+        try {
+            FacturaController.mostrar(venta.getId(), venta.getFechaVenta(), venta.getNombreCliente(),
+                    venta.getCuiCliente(), venta.getPlaca(), venta.getDescripcionVehiculo(),
+                    venta.getPrecio(), actual != null ? actual.getUsername() : "");
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
+        }
     }
 
     @FXML

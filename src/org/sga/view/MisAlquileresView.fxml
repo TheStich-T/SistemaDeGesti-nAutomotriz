@@ -11,29 +11,32 @@
 <AnchorPane prefHeight="480.0" prefWidth="760.0" styleClass="mainFxmlClass"
             xmlns="http://javafx.com/javafx/21.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.sga.controller.HistorialVentasController">
+            fx:controller="org.sga.controller.MisAlquileresController">
     <stylesheets>
-        <URL value="@style/buscarvehiculosview.css" />
+        <URL value="@/org/sga/view/style/alquilerview.css" />
     </stylesheets>
     <children>
         <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" onAction="#eventoVolver" prefHeight="25.0" prefWidth="89.0" text="Regresar" />
-        <Label layoutX="245.0" layoutY="15.0" styleClass="page-title" text="Mi Historial de Ventas">
+
+        <Label layoutX="270.0" layoutY="15.0" styleClass="page-title" text="Mis Alquileres">
             <font>
                 <Font size="22.0" />
             </font>
         </Label>
-        <TableView fx:id="tblVentas" layoutX="30.0" layoutY="70.0" prefHeight="330.0" prefWidth="700.0" styleClass="table-view">
+        <TableView fx:id="tblAlquileres" layoutX="30.0" layoutY="70.0" prefHeight="330.0" prefWidth="700.0" styleClass="table-view">
             <columns>
-                <TableColumn fx:id="colNumero" prefWidth="70.0" text="No. venta" />
+                <TableColumn fx:id="colNumero" prefWidth="70.0" text="No." />
                 <TableColumn fx:id="colPlaca" prefWidth="80.0" text="Placa" />
-                <TableColumn fx:id="colVehiculo" prefWidth="170.0" text="Vehículo" />
+                <TableColumn fx:id="colVehiculo" prefWidth="160.0" text="Vehículo" />
                 <TableColumn fx:id="colCliente" prefWidth="150.0" text="Cliente" />
-                <TableColumn fx:id="colPrecio" prefWidth="100.0" text="Precio" />
-                <TableColumn fx:id="colFecha" prefWidth="120.0" text="Fecha" />
+                <TableColumn fx:id="colSalida" prefWidth="80.0" text="Salida" />
+                <TableColumn fx:id="colRegreso" prefWidth="90.0" text="Devolución" />
+                <TableColumn fx:id="colSeguro" prefWidth="70.0" text="Seguro" />
             </columns>
         </TableView>
+
         <Label fx:id="lblResumen" layoutX="30.0" layoutY="420.0" styleClass="field-label" text="" />
-        <Button layoutX="430.0" layoutY="415.0" mnemonicParsing="false" onAction="#eventoMostrarFactura" prefHeight="30.0" prefWidth="140.0" styleClass="primary-button" text="MOSTRAR FACTURA" />
+        <Button layoutX="430.0" layoutY="415.0" mnemonicParsing="false" onAction="#eventoMostrarTicket" prefHeight="30.0" prefWidth="140.0" styleClass="primary-button" text="MOSTRAR TICKET" />
         <Button layoutX="590.0" layoutY="415.0" mnemonicParsing="false" onAction="#eventoActualizar" prefHeight="30.0" prefWidth="140.0" styleClass="secondary-button" text="ACTUALIZAR" />
 
     </children>

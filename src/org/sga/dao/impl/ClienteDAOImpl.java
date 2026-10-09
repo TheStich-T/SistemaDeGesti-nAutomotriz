@@ -41,6 +41,27 @@ public class ClienteDAOImpl implements ClienteDAO {
     }
 
     @Override
+    public boolean guardar(Cliente objeto) {
+        log.info("Guardando cliente: " + objeto.getCui());
+        String sql = "{call sp_guardarcliente(?, ?, ?, ?, ?, ?)}";
+        try (Connection conexion = Conexion.getInstancia().conectar();
+             CallableStatement consulta = conexion.prepareCall(sql)) {
+            consulta.setLong(1, objeto.getCui());
+            consulta.setString(2, objeto.getNombres());
+            consulta.setString(3, objeto.getApellidos());
+            consulta.setString(4, objeto.getTelefono());
+            consulta.setString(5, objeto.getCorreo());
+            consulta.setString(6, objeto.getLicencia());
+            consulta.executeUpdate();
+            log.info("Cliente guardado: " + objeto.getCui());
+            return true;
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "Error al guardar cliente: " + objeto.getCui(), e);
+            return false;
+        }
+    }
+
+    @Override
     public List<Cliente> listar() {
         log.info("Listando clientes");
         List<Cliente> clientes = new ArrayList<>();

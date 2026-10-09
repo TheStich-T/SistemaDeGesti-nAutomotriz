@@ -117,6 +117,31 @@ public class AlquilerDAOImpl implements AlquilerDAO {
     }
 
     @Override
+    public List<Alquiler> listarPorAsesor(int idAsesor) {
+        log.info("Listando alquileres del asesor: " + idAsesor);
+        List<Alquiler> alquileres = new ArrayList<>();
+        String sql = "{call sp_listaralquileresporasesor(?)}";
+        try (Connection conexion = Conexion.getInstancia().conectar();
+             CallableStatement consulta = conexion.prepareCall(sql)) {
+            consulta.setInt(1, idAsesor);
+            try (ResultSet tablaResultado = consulta.executeQuery()) {
+                while (tablaResultado.next()) {
+                    Alquiler alquiler = mapearAlquiler(tablaResultado);
+                    // el SP agrega: placa, descripción del vehículo y nombre del cliente
+                    alquiler.setPlaca(tablaResultado.getString(10));
+                    alquiler.setDescripcionVehiculo(tablaResultado.getString(11));
+                    alquiler.setNombreCliente(tablaResultado.getString(12));
+                    alquileres.add(alquiler);
+                }
+            }
+            log.info("Alquileres del asesor " + idAsesor + ": " + alquileres.size());
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "Error al listar alquileres del asesor: " + idAsesor, e);
+        }
+        return alquileres;
+    }
+
+    @Override
     public Alquiler buscar(Integer id) {
         log.info("Buscando alquiler por ID: " + id);
         Alquiler alquiler = null;

@@ -17,11 +17,15 @@ public class AsesorDashboardController implements Initializable {
 
     @FXML
     private Label lblBienvenida;
+    @FXML
+    private Label lblUsuarioSidebar;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Usuario actual = SessionContext.getInstancia().getUsuarioActual();
-        lblBienvenida.setText("Bienvenido, " + (actual != null ? actual.getUsername() : "asesor"));
+        String nombreUsuario = actual != null ? actual.getUsername() : "asesor";
+        lblBienvenida.setText("Bienvenido, " + nombreUsuario);
+        lblUsuarioSidebar.setText(nombreUsuario);
     }
 
     @FXML
@@ -38,7 +42,7 @@ public class AsesorDashboardController implements Initializable {
             new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
         }
     }
-    
+
     @FXML
     public void eventoBuscarVehiculos(ActionEvent evento) {
         try {
@@ -65,7 +69,8 @@ public class AsesorDashboardController implements Initializable {
             new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
         }
     }
-        @FXML
+
+    @FXML
     public void eventoRegistrarAlquiler(ActionEvent evento) {
         try {
             Main.cambiarEscena("/org/sga/view/AlquilerView.fxml");
@@ -73,5 +78,13 @@ public class AsesorDashboardController implements Initializable {
             new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
         }
     }
-    
+
+    @FXML
+    public void eventoMisAlquileres(ActionEvent evento) {
+        try {
+            Main.cambiarEscena("/org/sga/view/MisAlquileresView.fxml");
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
+        }
+    }
 }
