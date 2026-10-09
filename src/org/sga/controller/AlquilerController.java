@@ -50,6 +50,7 @@ public class AlquilerController implements Initializable {
     @FXML private CheckBox chkSeguro;
     @FXML private Label lblAsesor;
     @FXML private Label lblMensaje;
+    @FXML private Label lblEstadoCliente;
 
     private VehiculoDAO vehiculoDAO;
     private AlquilerDAO alquilerDAO;
@@ -61,6 +62,9 @@ public class AlquilerController implements Initializable {
         alquilerDAO = new AlquilerDAOImpl();
         clienteDAO = new ClienteDAOImpl();
         lblMensaje.setText("");
+        lblEstadoCliente.setText("Cliente nuevo");
+        lblEstadoCliente.setText("Cliente encontrado");
+
 
         cmbVehiculo.setConverter(new StringConverter<>() {
             @Override
@@ -251,5 +255,22 @@ public class AlquilerController implements Initializable {
 
     private void mostrarAlerta(Alert.AlertType tipo, String mensaje) {
         new Alert(tipo, mensaje, ButtonType.OK).show();
+    }
+    
+    @FXML
+    public void eventoBuscarCliente(ActionEvent evento) {
+        String cui = txtCui.getText() == null ? "" : txtCui.getText().trim();
+        if (!cui.matches("\\d{13}")) {
+            mostrarAlerta(Alert.AlertType.WARNING, "El CUI debe tener exactamente 13 dígitos numéricos.");
+            return;
+        }
+        Cliente cliente = clienteDAO.buscar(Long.parseLong(cui));
+        if (cliente == null) {
+            return; // cliente nuevo: se llenan los datos a mano
+        }
+        txtNombres.setText(cliente.getNombres());
+        txtApellidos.setText(cliente.getApellidos());
+        txtTelefono.setText(cliente.getTelefono());
+        txtLicencia.setText(cliente.getLicencia());
     }
 }
