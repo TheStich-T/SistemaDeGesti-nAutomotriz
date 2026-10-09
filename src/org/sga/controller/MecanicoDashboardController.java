@@ -20,6 +20,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Button;
+import org.sga.manager.RolPermisos;
 
 import org.sga.dao.VehiculoDAO;
 import org.sga.dao.impl.VehiculoDAOImpl;
@@ -46,6 +48,7 @@ public class MecanicoDashboardController implements Initializable {
     @FXML private TableColumn<Vehiculo, String> columnaObservaciones;
     @FXML private TableColumn<Vehiculo, String> columnaFechaIngreso;
     @FXML private ComboBox<String> comboEstado;
+    @FXML private Button btnVolverPanel;
 
     private final VehiculoDAO vehiculoDAO = new VehiculoDAOImpl();
     private final ObservableList<Vehiculo> listaCola = FXCollections.observableArrayList();
@@ -64,6 +67,10 @@ public class MecanicoDashboardController implements Initializable {
         if (lblUsuarioSidebar != null) {
             lblUsuarioSidebar.setText(nombreUsuario);
         }
+        
+        boolean esAdmin = actual != null && "admin".equalsIgnoreCase(actual.getRol());
+        btnVolverPanel.setVisible(esAdmin);
+        btnVolverPanel.setManaged(esAdmin);
     }
 
     private void configurarTabla() {
@@ -240,5 +247,16 @@ public class MecanicoDashboardController implements Initializable {
 
     private void mostrarError(String mensaje) {
         new Alert(Alert.AlertType.ERROR, mensaje, ButtonType.OK).showAndWait();
+    }
+    
+        @FXML
+    public void eventoVolverPanel(ActionEvent evento) {
+        try {
+            Usuario actual = SessionContext.getInstancia().getUsuarioActual();
+            String dashboard = (actual != null) ? RolPermisos.getDashboardPorRol(actual.getRol()) : null;
+            Main.cambiarEscena(dashboard != null ? dashboard : "/org/sga/view/LoginView.fxml");
+        } catch (IOException e) {
+            mostrarAdvertencia(e.getMessage());
+        }
     }
 }

@@ -37,6 +37,7 @@
                         <Label styleClass="sidebar-link-active" text="Menú principal" />
                     </children>
                 </VBox>
+                <Button fx:id="btnVolverPanel" managed="false" mnemonicParsing="false" onAction="#eventoVolverPanel" styleClass="sidebar-logout" text="Volver al panel admin" visible="false" />       
                 <Region VBox.vgrow="ALWAYS" />
                 <Region maxWidth="Infinity" prefHeight="1.0" styleClass="sidebar-divider">
                     <VBox.margin>

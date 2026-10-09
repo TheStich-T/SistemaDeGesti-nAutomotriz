@@ -244,7 +244,7 @@ public class VentaController implements Initializable {
         new Alert(tipo, mensaje, ButtonType.OK).show();
     }
     
-    @FXML
+   @FXML
 public void eventoBuscarCliente(ActionEvent evento) {
     String cui = txtCui.getText() == null ? "" : txtCui.getText().trim();
     if (!cui.matches("\\d{13}")) {
@@ -253,11 +253,13 @@ public void eventoBuscarCliente(ActionEvent evento) {
     }
     Cliente cliente = clienteDAO.buscar(Long.parseLong(cui));
     if (cliente == null) {
+        lblMensaje.setText("Cliente no registrado previamente. Ingrese los datos manualmente.");
         return; 
     }
     txtNombres.setText(cliente.getNombres());
     txtApellidos.setText(cliente.getApellidos());
     txtTelefono.setText(cliente.getTelefono());
     txtLicencia.setText(cliente.getLicencia());
+    lblMensaje.setText("Cliente encontrado.");
 }
 }

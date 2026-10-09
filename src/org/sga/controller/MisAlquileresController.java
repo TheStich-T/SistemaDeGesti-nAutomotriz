@@ -15,6 +15,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import java.util.ArrayList;
+import java.util.Comparator;
+import org.sga.dao.UsuarioDAO;
+import org.sga.dao.impl.UsuarioDAOImpl;
 import org.sga.dao.AlquilerDAO;
 import org.sga.dao.impl.AlquilerDAOImpl;
 import org.sga.manager.RolPermisos;
@@ -36,12 +40,19 @@ public class MisAlquileresController implements Initializable {
     @FXML private TableColumn<Alquiler, String> colRegreso;
     @FXML private TableColumn<Alquiler, String> colSeguro;
     @FXML private Label lblResumen;
+    @FXML private Label lblTitulo;
+    private UsuarioDAO usuarioDAO;
 
     private AlquilerDAO alquilerDAO;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         alquilerDAO = new AlquilerDAOImpl();
+        
+                usuarioDAO = new UsuarioDAOImpl();
+        if (esAdmin(SessionContext.getInstancia().getUsuarioActual())) {
+            lblTitulo.setText("Historial de Alquileres");
+        }
 
         colNumero.setCellValueFactory(dato -> new SimpleStringProperty(String.valueOf(dato.getValue().getId())));
         colPlaca.setCellValueFactory(dato -> new SimpleStringProperty(dato.getValue().getPlaca()));
@@ -59,7 +70,6 @@ public class MisAlquileresController implements Initializable {
         cargarAlquileres();
     }
 
-    // solo los alquileres del asesor que tiene la sesión activa
     private void cargarAlquileres() {
         Usuario actual = SessionContext.getInstancia().getUsuarioActual();
 
@@ -69,9 +79,23 @@ public class MisAlquileresController implements Initializable {
             return;
         }
 
-        List<Alquiler> alquileres = alquilerDAO.listarPorAsesor(actual.getId());
+        List<Alquiler> alquileres;
+        if (esAdmin(actual)) {
+            alquileres = new ArrayList<>();
+            for (Usuario usuario : usuarioDAO.listar()) {
+                alquileres.addAll(alquilerDAO.listarPorAsesor(usuario.getId()));
+            }
+            alquileres.sort(Comparator.comparing(Alquiler::getFechaRegistro,
+                    Comparator.nullsLast(Comparator.reverseOrder())));
+        } else {
+            alquileres = alquilerDAO.listarPorAsesor(actual.getId());
+        }
         tblAlquileres.setItems(FXCollections.observableArrayList(alquileres));
         lblResumen.setText(alquileres.size() + " alquiler(es)");
+    }
+
+    private boolean esAdmin(Usuario usuario) {
+        return usuario != null && "admin".equalsIgnoreCase(usuario.getRol());
     }
 
     @FXML

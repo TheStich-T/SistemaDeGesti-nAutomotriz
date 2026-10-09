@@ -15,11 +15,9 @@ public class Alquiler {
     private boolean llevaSeguro;
     private LocalDate fechaDevolucionReal;
     private LocalDateTime fechaRegistro;
-    // datos de apoyo para mostrar "Mis alquileres" (vienen de los JOIN)
     private String placa;
     private String descripcionVehiculo;
     private String nombreCliente;
-    // datos de la devolución (T3.23 a T3.28), los calcula y guarda la base de datos
     private LocalDateTime fechaHoraDevolucion;
     private String estadoDevolucion;
     private BigDecimal precioDia;

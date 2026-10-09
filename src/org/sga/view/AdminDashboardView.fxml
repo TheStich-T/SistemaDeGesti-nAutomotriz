@@ -164,23 +164,33 @@
                     </children>
                 </GridPane>
  
-                <GridPane hgap="16.0" vgap="16.0">
+                                <GridPane hgap="16.0" vgap="12.0">
                     <columnConstraints>
                         <ColumnConstraints minWidth="180.0" prefWidth="220.0" />
                         <ColumnConstraints minWidth="180.0" prefWidth="220.0" />
                         <ColumnConstraints minWidth="180.0" prefWidth="220.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="70.0" prefHeight="80.0" />
-                        <RowConstraints minHeight="70.0" prefHeight="80.0" />
+                        <RowConstraints minHeight="52.0" prefHeight="60.0" />
+                        <RowConstraints minHeight="52.0" prefHeight="60.0" />
+                        <RowConstraints minHeight="52.0" prefHeight="60.0" />
+                        <RowConstraints minHeight="52.0" prefHeight="60.0" />
                     </rowConstraints>
                     <children>
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoGestionUsuarios" styleClass="dashboard-card" text="Gestión de usuarios" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoReportes" styleClass="dashboard-card, dashboard-card-alt" text="Reportes por período" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoActualizarIndicadores" styleClass="dashboard-card" text="Actualizar indicadores" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Inventario de vehículos" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card" text="Historial de ventas" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoProximamente" styleClass="dashboard-card, dashboard-card-alt" text="Historial de alquileres" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoInventario" styleClass="dashboard-card, dashboard-card-alt" text="Inventario de vehículos" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoRegistrarVehiculo" styleClass="dashboard-card" text="Registrar vehículo" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoTaller" styleClass="dashboard-card, dashboard-card-alt" text="Taller (cola y estados)" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoRegistrarVenta" styleClass="dashboard-card" text="Registrar venta" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoHistorialVentas" styleClass="dashboard-card, dashboard-card-alt" text="Historial de ventas" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoRegistrarAlquiler" styleClass="dashboard-card" text="Registrar alquiler" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoRegistrarDevolucion" styleClass="dashboard-card, dashboard-card-alt" text="Registrar devolución" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eventoHistorialAlquileres" styleClass="dashboard-card" text="Historial de alquileres" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                     </children>
                 </GridPane>
             </children>

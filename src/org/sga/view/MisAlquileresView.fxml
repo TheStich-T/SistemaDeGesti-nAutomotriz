@@ -18,7 +18,7 @@
     <children>
         <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" onAction="#eventoVolver" prefHeight="25.0" prefWidth="89.0" text="Regresar" />
 
-        <Label layoutX="270.0" layoutY="15.0" styleClass="page-title" text="Mis Alquileres">
+        <Label fx:id="lblTitulo" layoutX="270.0" layoutY="15.0" styleClass="page-title" text="Mis Alquileres">
             <font>
                 <Font size="22.0" />
             </font>

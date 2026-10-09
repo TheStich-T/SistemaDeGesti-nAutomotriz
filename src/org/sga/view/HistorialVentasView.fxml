@@ -17,10 +17,10 @@
     </stylesheets>
     <children>
         <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" onAction="#eventoVolver" prefHeight="25.0" prefWidth="89.0" text="Regresar" />
-        <Label layoutX="245.0" layoutY="15.0" styleClass="page-title" text="Mi Historial de Ventas">
-            <font>
-                <Font size="22.0" />
-            </font>
+       <Label layoutX="270.0" layoutY="15.0" styleClass="page-title" text="Mis Alquileres">
+                <font>
+            <Font size="22.0" />
+                </font>
         </Label>
         <TableView fx:id="tblVentas" layoutX="30.0" layoutY="70.0" prefHeight="330.0" prefWidth="700.0" styleClass="table-view">
             <columns>

@@ -55,7 +55,6 @@ public class AdminDashboardController implements Initializable {
         cargarIndicadores();
     }
 
-    // T3.32: muestra en las tarjetas los valores que devuelve sp_indicadoresgenerales
     private void cargarIndicadores() {
         Indicadores indicadores = reporteDAO.obtenerIndicadores();
         if (indicadores == null) {
@@ -79,6 +78,14 @@ public class AdminDashboardController implements Initializable {
         lblUsuariosActivos.setText(String.valueOf(indicadores.getUsuariosActivos()));
     }
 
+    private void irA(String rutaFXML) {
+        try {
+            Main.cambiarEscena(rutaFXML);
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
+        }
+    }
+
     @FXML
     public void eventoActualizarIndicadores(ActionEvent evento) {
         cargarIndicadores();
@@ -86,25 +93,52 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     public void eventoReportes(ActionEvent evento) {
-        try {
-            Main.cambiarEscena("/org/sga/view/ReportesView.fxml");
-        } catch (IOException e) {
-            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
-        }
+        irA("/org/sga/view/ReportesView.fxml");
     }
 
     @FXML
     public void eventoGestionUsuarios(ActionEvent evento) {
-        try {
-            Main.cambiarEscena("/org/sga/view/GestionUsuariosView.fxml");
-        } catch (IOException e) {
-            new Alert(Alert.AlertType.WARNING, e.getMessage(), ButtonType.OK).show();
-        }
+        irA("/org/sga/view/GestionUsuariosView.fxml");
     }
 
     @FXML
-    public void eventoProximamente(ActionEvent evento) {
-        new Alert(Alert.AlertType.INFORMATION, "Esta función se implementa en un próximo sprint.", ButtonType.OK).show();
+    public void eventoInventario(ActionEvent evento) {
+        irA("/org/sga/view/BuscarVehiculosView.fxml");
+    }
+
+    @FXML
+    public void eventoRegistrarVehiculo(ActionEvent evento) {
+        irA("/org/sga/view/VehiculoAltaView.fxml");
+    }
+
+    @FXML
+    public void eventoTaller(ActionEvent evento) {
+        irA("/org/sga/view/MecanicoDashboardView.fxml");
+    }
+
+    @FXML
+    public void eventoRegistrarVenta(ActionEvent evento) {
+        irA("/org/sga/view/VentaView.fxml");
+    }
+
+    @FXML
+    public void eventoHistorialVentas(ActionEvent evento) {
+        irA("/org/sga/view/HistorialVentasView.fxml");
+    }
+
+    @FXML
+    public void eventoRegistrarAlquiler(ActionEvent evento) {
+        irA("/org/sga/view/AlquilerView.fxml");
+    }
+
+    @FXML
+    public void eventoRegistrarDevolucion(ActionEvent evento) {
+        irA("/org/sga/view/DevolucionView.fxml");
+    }
+
+    @FXML
+    public void eventoHistorialAlquileres(ActionEvent evento) {
+        irA("/org/sga/view/MisAlquileresView.fxml");
     }
 
     @FXML
