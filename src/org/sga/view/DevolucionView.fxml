@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="880.0" styleClass="mainFxmlClass"
+            xmlns="http://javafx.com/javafx/21.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.sga.controller.DevolucionController">
+    <stylesheets>
+        <URL value="@/org/sga/view/style/devolucionview.css" />
+    </stylesheets>
+    <children>
+        <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" onAction="#eventoVolver" prefHeight="25.0" prefWidth="89.0" text="Regresar" />
+
+        <Label layoutX="320.0" layoutY="15.0" styleClass="page-title" text="Registrar Devolución">
+            <font>
+                <Font size="22.0" />
+            </font>
+        </Label>
+        <TableView fx:id="tblAlquileres" layoutX="30.0" layoutY="70.0" prefHeight="300.0" prefWidth="820.0" styleClass="table-view">
+            <columns>
+                <TableColumn fx:id="colNumero" prefWidth="50.0" text="No." />
+                <TableColumn fx:id="colPlaca" prefWidth="75.0" text="Placa" />
+                <TableColumn fx:id="colVehiculo" prefWidth="140.0" text="Vehículo" />
+                <TableColumn fx:id="colCliente" prefWidth="130.0" text="Cliente" />
+                <TableColumn fx:id="colSalida" prefWidth="80.0" text="Salida" />
+                <TableColumn fx:id="colRegreso" prefWidth="90.0" text="Programada" />
+                <TableColumn fx:id="colEstado" prefWidth="75.0" text="Estado" />
+                <TableColumn fx:id="colAtraso" prefWidth="70.0" text="Días atraso" />
+                <TableColumn fx:id="colCobro" prefWidth="100.0" text="Cobro adicional" />
+            </columns>
+        </TableView>
+
+        <Label fx:id="lblDetalle" layoutX="30.0" layoutY="382.0" maxWidth="820.0" styleClass="field-label" text="" wrapText="true" />
+        <Label fx:id="lblResumen" layoutX="30.0" layoutY="450.0" styleClass="field-label" text="" />
+        <Button layoutX="510.0" layoutY="445.0" mnemonicParsing="false" onAction="#eventoRegistrarDevolucion" prefHeight="30.0" prefWidth="190.0" styleClass="primary-button" text="REGISTRAR DEVOLUCIÓN" />
+        <Button layoutX="710.0" layoutY="445.0" mnemonicParsing="false" onAction="#eventoActualizar" prefHeight="30.0" prefWidth="140.0" styleClass="secondary-button" text="ACTUALIZAR" />
+
+    </children>
+</AnchorPane>
